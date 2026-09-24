@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>RobotDock · 统一设备管理 Demo v2</title>
+  <style>
+:root{--shell:#f4f4f5;--panel:#fff;--ink:#191a1d;--muted:#63666e;--line:#dedfe3;--graphite:#151619;--silver:#dadce2;--ok:#17634d;--ok-bg:#eaf4ef;--warn:#875121;--warn-bg:#faf0e4;--bad:#a53333;--bad-bg:#fceeee;--radius:14px;--unit:4px}*{box-sizing:border-box}body{margin:0;background:var(--shell);color:var(--ink);font:16px/1.6 'Noto Sans CJK SC','Microsoft YaHei',sans-serif;-webkit-font-smoothing:antialiased}button,input,select{font:inherit}button,a,input,select{touch-action:manipulation}button{cursor:pointer;border:1px solid var(--line);border-radius:8px;min-height:44px;padding:9px 16px;background:var(--panel);color:var(--ink);font-weight:600;transition:background .18s,border-color .18s}button:hover{background:#ebecf0;border-color:#a3a6af}button:active{background:#dfe1e6}button:disabled{cursor:not-allowed;color:#767a82;background:#edeef0;border-color:var(--line)}button.primary{background:var(--ink);color:white;border-color:var(--ink)}button.primary:hover{background:#373a40}button.primary:disabled{background:#dddfe4;color:#686c75;border-color:#dddfe4}button.danger{color:var(--bad);border-color:#ddaeae}a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #71798b;outline-offset:3px}.skip{position:fixed;top:-80px;z-index:9;background:white;padding:16px}.skip:focus{top:8px}h1,h2,h3,p{margin:0}h1{font-size:30px;line-height:1.3;letter-spacing:-.7px}h2{font-size:20px;line-height:1.4}h3{font-size:17px}small,.small{font-size:13px}.muted{color:var(--muted)}.mono{font-family:'DejaVu Sans Mono',Consolas,monospace;font-variant-numeric:tabular-nums;font-size:.87em}.eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:10px}.sidebar{position:fixed;width:232px;height:100dvh;inset:0 auto 0 0;border-right:1px solid var(--line);display:flex;flex-direction:column;padding:24px 16px;background:var(--shell)}.brand{display:flex;align-items:center;gap:12px;margin:0 8px 28px}.brand img{width:128px;height:40px;object-fit:contain;background:#111;border-radius:4px}.brand p{font-size:12px;letter-spacing:1.2px;color:var(--muted);margin-top:8px}.nav-label{font-size:11px;letter-spacing:1.4px;color:var(--muted);padding:16px 12px 8px}.nav a{display:flex;align-items:center;gap:12px;text-decoration:none;padding:12px;min-height:48px;border-radius:8px;font-size:14px;font-weight:600;margin:3px 0}.nav a:hover{background:#e9eaed}.nav a[aria-current=page]{background:var(--ink);color:white}.icon{display:inline-flex;width:20px;height:20px;flex-shrink:0}.icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.sidebar-foot{margin-top:auto;padding:20px 12px 0;border-top:1px solid var(--line)}.sidebar-foot strong{display:block;font-size:13px}.sidebar-foot p{font-size:11px;color:var(--muted);margin:5px 0}.version-dot{display:inline-block;width:7px;height:7px;background:var(--ink);border-radius:50%;margin-right:8px}.workspace{margin-left:232px}.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid var(--line);background:var(--panel);gap:12px}.breadcrumb{font-size:13px;color:var(--muted)}.breadcrumb b{color:var(--ink);font-weight:600}.top-actions{display:flex;gap:12px;align-items:center}.demo-chip{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:4px 10px;border-radius:20px;white-space:nowrap}.content{max-width:1460px;margin:auto;padding:32px 36px 24px}.heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:28px}.heading p{margin-top:8px;font-size:14px;color:var(--muted)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;min-width:0}.grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,1fr);gap:20px}.equal{grid-template-columns:repeat(2,minmax(0,1fr))}.stack{display:grid;gap:20px}.section{margin-top:28px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.tag{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:5px;padding:3px 8px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--shell)}.tag.ok{color:var(--ok);background:var(--ok-bg);border-color:#d0e4d9}.tag.warn{color:var(--warn);background:var(--warn-bg);border-color:#eadbc9}.tag.bad{color:var(--bad);background:var(--bad-bg);border-color:#eccaca}.hero{position:relative;background:var(--graphite);color:white;min-height:310px;overflow:hidden;display:grid;grid-template-columns:1.1fr 1fr;padding:28px;border-color:#303239}.hero:before{content:'';position:absolute;inset:0;background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-gradient(90deg,#ffffff06 1px,transparent 1px);background-size:28px 28px;pointer-events:none}.hero-copy{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start}.hero .eyebrow{color:#bdc0c9;font-size:10px}.hero h2{font-size:38px;letter-spacing:-1px;font-weight:500;margin:16px 0 8px}.hero .serial{color:#d0d3dc;font-size:12px}.hero .bottom{margin-top:auto;padding-top:32px;font-size:12px;color:#c5c8d1}.hero .tag{background:#ffffff09;color:#e5e7ed;border-color:#575a64}.device-art{position:relative;display:flex;align-items:center;justify-content:center;min-width:0}.device-art svg{width:100%;max-width:260px;max-height:240px}.device-art span{position:absolute;bottom:-8px;font-size:10px;color:#b5b9c3;letter-spacing:1px}.license-summary{display:flex;flex-direction:column;justify-content:space-between}.license-summary h2{font-size:26px;margin:12px 0}.license-summary p{font-size:14px;color:var(--muted)}.license-summary button{margin-top:24px;width:100%}.row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);font-size:14px}.row:last-child{border-bottom:0}.row>div{min-width:0}.row strong{font-weight:600}.row small{display:block;color:var(--muted);margin-top:3px}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--radius);background:white;margin:20px 0}.metric{padding:20px 24px;border-right:1px solid var(--line)}.metric:last-child{border:0}.metric span{font-size:12px;color:var(--muted)}.metric strong{display:block;font-size:26px;font-weight:500;margin:7px 0}.metric small{font-size:11px;color:var(--muted)}.meter{height:4px;border-radius:3px;background:#e7e8ec;margin-top:12px;overflow:hidden}.meter i{display:block;background:#5c626f;height:100%;width:var(--value)}.strip{display:flex;gap:10px;padding:14px 16px;background:#edeef2;border-radius:8px;font-size:13px;color:#505663;margin-top:20px;align-items:flex-start}.strip.warn{background:var(--warn-bg);color:var(--warn)}.strip.bad{background:var(--bad-bg);color:var(--bad)}.strip .icon{width:17px;margin-top:2px}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}.step-card{border-top:2px solid var(--line);padding-top:16px}.step-card b{display:block;font-size:14px;margin:8px 0}.step-card p{font-size:13px;color:var(--muted)}.step-card.current{border-color:var(--ink)}.step-card .number{font-size:12px;color:var(--muted);font-family:monospace}.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.filebox{background:var(--shell);border:1px dashed #a5a9b2;border-radius:12px;padding:24px;text-align:center}.filebox input{display:block;max-width:100%;margin:20px auto;font-size:13px}.filebox p{font-size:13px;color:var(--muted)}.filebox h3{margin-top:12px}.summary-list{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;font-size:14px;margin:0}.summary-list dt{color:var(--muted)}.summary-list dd{margin:0;overflow-wrap:anywhere}.samples{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.sample{border:1px solid var(--line);border-radius:10px;padding:18px}.sample p{font-size:12px;color:var(--muted);min-height:42px;margin:8px 0 16px}.sample button{font-size:12px;padding:8px 12px;width:100%;margin-top:8px}.sample .code{font-size:10px;letter-spacing:1px;color:var(--muted);margin-bottom:8px}.check-row{display:flex;gap:12px;font-size:14px;align-items:flex-start;margin:20px 0}.check-row input{width:20px;height:20px;flex-shrink:0;accent-color:var(--ink)}.notice{font-size:13px;color:var(--muted);margin:16px 0}.app-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.app-card h2{margin:12px 0 8px}.app-card p{color:var(--muted);font-size:14px;margin-bottom:20px}.app-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.app-number{font:12px monospace;letter-spacing:1px;color:var(--muted)}.app-card button{width:100%;margin-top:12px}.empty{padding:40px 24px;text-align:center}.empty p{color:var(--muted);font-size:14px;margin:12px auto 24px;max-width:460px}label.field{display:block;font-size:14px;font-weight:600;margin:18px 0}label.field input,label.field select{display:block;width:100%;margin-top:8px;border:1px solid #b9bdc6;background:var(--shell);padding:11px 12px;border-radius:8px;min-height:46px;color:var(--ink)}pre{background:var(--graphite);color:#e5e7ed;border-radius:10px;padding:24px;font:13px/1.9 'DejaVu Sans Mono',monospace;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;margin:16px 0}.log{display:grid;grid-template-columns:80px 80px 1fr;gap:16px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px}.log time{color:var(--muted);font-family:monospace}.footnote{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;color:var(--muted);font-size:11px}.error{color:var(--bad);font-size:14px;margin-top:16px;overflow-wrap:anywhere}.error:empty{display:none}dialog{width:min(600px,calc(100% - 32px));max-height:88dvh;overflow:auto;border:1px solid #c2c5ce;border-radius:16px;padding:28px;color:var(--ink)}dialog::backdrop{background:#0b0d1470;backdrop-filter:blur(3px)}.modal-head{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:20px}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--graphite);color:white;border:1px solid #555b66;border-radius:10px;padding:12px 20px;max-width:calc(100% - 32px);z-index:20;font-size:14px;pointer-events:none}.toast:empty{display:none}.toggle-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;border-bottom:1px solid var(--line);font-size:14px}.toggle-row input{width:22px;height:22px;accent-color:var(--ink)}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}[hidden]{display:none!important}
+@media(min-width:1600px){.content{padding-top:40px}.hero{min-height:340px}}@media(max-width:1100px){.sidebar{width:196px;padding:24px 12px}.workspace{margin-left:196px}.content{padding:24px}.topbar{padding:0 24px}.grid{grid-template-columns:minmax(0,1.35fr) minmax(240px,1fr)}.hero{padding:22px}.hero h2{font-size:30px}.metric{padding:16px}.samples{grid-template-columns:1fr}.sample p{min-height:0}.sample .actions{display:grid;grid-template-columns:1fr 1fr}}@media(max-width:800px){.sidebar{position:static;width:auto;height:auto;padding:16px;border-right:0;border-bottom:1px solid var(--line)}.brand{margin:0 0 16px}.brand p,.sidebar-foot,.nav-label{display:none}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{padding:10px;font-size:13px;margin:0}.nav .icon{width:16px;height:16px}.workspace{margin:0}.topbar{height:auto;min-height:68px;padding:12px 20px}.breadcrumb{display:none}.top-actions{width:100%;justify-content:space-between}.content{padding:24px 20px}.grid,.equal,.app-grid{grid-template-columns:1fr}.heading{align-items:flex-start;flex-wrap:wrap}.heading h1{font-size:26px}.metrics{grid-template-columns:1fr 1fr}.metric:nth-child(2){border-right:0}.metric:nth-child(-n+2){border-bottom:1px solid var(--line)}.hero{min-height:280px}.hero h2{font-size:32px}.steps{gap:12px}.step-card p{font-size:12px}.footnote{flex-direction:column;gap:4px}.log{grid-template-columns:70px 1fr;gap:8px}.log span:last-child{grid-column:1/-1}.summary-list{grid-template-columns:95px 1fr}.panel{padding:20px}}@media(max-width:420px){.hero{grid-template-columns:1fr}.device-art{display:none}.hero{min-height:240px}.steps{grid-template-columns:1fr}.step-card{padding-top:10px}.panel{padding:18px}.metrics strong{font-size:23px}.top-actions button{font-size:12px;padding:8px 12px}}@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* v2 information architecture and visual refinements; base primitives are reused from v1. */
+body{background:linear-gradient(135deg,#f6f6f7 0,#f0f1f3 100%)}
+main:focus{outline:none}
+.sidebar{background:linear-gradient(165deg,#f8f8f9 0,#eceef1 100%);overflow-y:auto;scrollbar-width:thin}.brand,.sidebar-foot{flex-shrink:0}
+.brand{margin-bottom:18px}.brand p{letter-spacing:1.55px}.brand-art{display:block;width:104px;height:124px;background:#000;border:1px solid #24262b;border-radius:8px;box-shadow:0 12px 34px #16181c20}
+.nav-label{padding-top:10px}.nav-separator{height:1px;background:var(--line);margin:14px 12px 6px}.nav-group-label{font-size:10px;letter-spacing:1.25px;color:var(--muted);padding:8px 12px 4px;text-transform:uppercase}
+.nav a{border:1px solid transparent}.nav a[aria-current=page]{border-color:#30333a;box-shadow:inset 3px 0 #d9dce2,0 8px 22px #10121618}.nav a.app-entry{background:transparent}.nav a.app-entry:hover{background:var(--line)}.nav a.app-entry[aria-current=page]{background:var(--ink)}
+.program-group{width:100%;min-width:0}.program-list{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}.program-list a{margin:0;min-height:48px}.program-name{min-width:0;overflow-wrap:anywhere}.program-group .nav-group-label{display:block;margin-bottom:8px}
+.topbar{box-shadow:0 1px 0 #ffffff inset}.content{max-width:1480px}
+.subnav{display:flex;gap:8px;flex-wrap:wrap;margin:-10px 0 24px;padding:6px;border:1px solid var(--line);border-radius:10px;background:#e9eaed;width:max-content;max-width:100%}
+.subnav a{display:inline-flex;align-items:center;min-height:38px;padding:7px 14px;border-radius:7px;text-decoration:none;color:var(--muted);font-size:13px;font-weight:650;white-space:nowrap}
+.subnav a:hover{background:#f5f5f6;color:var(--ink)}.subnav a[aria-current=page]{background:#fff;color:var(--ink);box-shadow:0 1px 4px #12141a18}
+.scope-line{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.scope-line .tag{background:#fff}
+.hero:after{content:'';position:absolute;inset:-65% -30%;background:linear-gradient(112deg,transparent 38%,#ffffff08 46%,#ffffff20 50%,#ffffff08 54%,transparent 62%);transform:translateX(-42%);animation:hero-sweep 16s ease-in-out infinite;pointer-events:none}
+.hero-copy,.device-art{z-index:1}.hero-kicker{display:flex;align-items:center;gap:9px;font:10px/1.2 monospace;letter-spacing:1px;color:#aeb3bd;margin-top:14px}.hero-kicker:before{content:'';width:28px;height:1px;background:#aeb3bd}
+@keyframes hero-sweep{0%,18%{transform:translateX(-44%)}52%,100%{transform:translateX(44%)}}
+.program-layout{align-items:start}.program-heading{display:flex;align-items:center;gap:16px}.program-heading .eyebrow{margin-bottom:4px}.program-symbol{display:grid;place-items:center;flex-shrink:0;width:56px;height:56px;background:var(--shell);border:1px solid var(--line);border-radius:12px}.program-symbol .icon{width:28px;height:28px}.program-description{font-size:14px;color:var(--muted);margin-top:20px}
+.program-flow{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 20px;margin:28px 0;padding:0}.program-flow li{border-top:1px solid var(--line);padding-top:16px;min-width:0}.program-step-number{font:12px/1.4 'DejaVu Sans Mono',monospace;color:var(--muted)}.program-flow h3{font-size:15px;margin:8px 0}.program-flow p{font-size:13px;color:var(--muted);text-wrap:pretty}.program-action{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:24px}.program-status .row{gap:12px}.program-details{font-size:13px;border-top:1px solid var(--line);margin-top:12px}.program-details summary{cursor:pointer;min-height:44px;padding:12px 0;color:var(--muted)}.program-details summary:focus-visible{outline:2px solid var(--muted);outline-offset:4px}.program-details p{padding-bottom:12px;color:var(--muted)}
+.program-placeholder{min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px}.program-placeholder .program-symbol{margin-bottom:24px;width:72px;height:72px}.program-placeholder .program-symbol .icon{width:36px;height:36px}.program-placeholder h2{font-size:24px}.program-placeholder p{font-size:14px;max-width:440px;color:var(--muted);margin-top:12px}.program-placeholder button{margin-top:28px}
+.page-intro{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:start}.page-intro .actions{justify-content:flex-end}
+.boundary{border-left:3px solid #5c626f}.boundary h3{margin-bottom:5px}.boundary p{font-size:13px;color:var(--muted)}
+.mini-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.mini-card{border:1px solid var(--line);border-radius:10px;padding:18px;background:#fafafb}.mini-card .code{font:10px/1.2 monospace;color:var(--muted);letter-spacing:1px}.mini-card h3{margin:10px 0 6px}.mini-card p{font-size:12px;color:var(--muted)}
+.kv-block{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.kv{padding:16px;border:1px solid var(--line);border-radius:10px;background:#fafafb}.kv span{display:block;font-size:11px;color:var(--muted);margin-bottom:7px}.kv strong{display:block;overflow-wrap:anywhere}
+.api-method{display:inline-flex;align-items:center;border-radius:4px;padding:2px 7px;margin-right:7px;background:#e5e7eb;color:#353941;font:700 10px monospace}.readonly{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}.readonly:before{content:'';width:7px;height:7px;border-radius:50%;background:#69707b}
+.tier-ribbon{border:1px solid var(--line);border-radius:10px;padding:12px 16px;background:linear-gradient(90deg,#f8f8f9,#eceef1);display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}.tier-ribbon p{font-size:12px;color:var(--muted)}
+.service-table .row>div:first-child{max-width:75%}.system-version{font:500 32px/1.1 monospace;letter-spacing:-1px;margin:10px 0}.app-engine{padding:13px 14px;border:1px dashed #b9bdc6;border-radius:8px;background:#f7f7f8;font-size:12px;color:var(--muted);margin:14px 0}.app-engine b{color:var(--ink)}
+.storage-bar{height:9px;border-radius:6px;background:#e1e3e7;overflow:hidden;margin:16px 0 8px}.storage-bar i{display:block;width:25%;height:100%;background:linear-gradient(90deg,#343840,#747b88)}
+@media(max-width:1100px){.program-flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:800px){.brand-art{width:68px;height:80px}.nav-separator,.nav-group-label{display:none}.program-group .nav-group-label{padding:12px 10px 4px}.subnav{width:100%;overflow-x:auto;flex-wrap:nowrap}.mini-grid{grid-template-columns:1fr}.page-intro{grid-template-columns:1fr}.page-intro .actions{justify-content:flex-start}.kv-block{grid-template-columns:1fr}.program-list a{width:100%}.program-placeholder{min-height:280px}}
+@media(max-width:420px){.top-actions .demo-chip{display:none}.nav a{flex:1 1 calc(50% - 8px)}.nav a.app-entry{flex-basis:100%}.tier-ribbon{align-items:flex-start;flex-direction:column}.subnav a{padding-inline:11px}}
+@media(prefers-reduced-motion:reduce){.hero:after{animation:none;transform:translateX(8%)}}
+
+/* ONE-G equipment console — compact nameplates, graphite and quiet silver. */
+:root{--shell:#f5f5f6;--panel:#fff;--ink:#202125;--muted:#6a6d74;--line:rgba(31,34,40,.10);--graphite:#181a1e;--silver:#d8dbe0;--instrument-surface:#eeeff1;--instrument-line:rgba(255,255,255,.13);--label-ink:#44474e;--control-fill:#f5f6f7;--radius:12px}
+body{background:var(--shell);font-size:14px;line-height:1.6}h1,h2,h3{text-wrap:balance}p{text-wrap:pretty}h1{font-size:28px;line-height:1.3;letter-spacing:-.8px;font-weight:700}h2{font-size:18px;letter-spacing:-.3px}h3{font-size:15px}
+button{font-size:13px;min-height:44px;border-radius:8px;padding:10px 16px}button.primary{background:var(--graphite);border-color:var(--graphite)}button.primary:hover{background:#34373d}.eyebrow{font-size:10px;letter-spacing:1.7px;font-weight:600}
+.sidebar{width:224px;padding:28px 16px 20px;background:var(--shell)}.brand{gap:12px;margin:0 8px 32px}.brand-art{display:block;width:44px;height:52px;flex-shrink:0;background:#000;border:0;border-radius:6px;box-shadow:none}.brand-copy strong{display:block;font-size:18px;font-weight:650;letter-spacing:-.6px;line-height:1.25}.brand-copy p{font:9px/1.5 'DejaVu Sans Mono',monospace;letter-spacing:1px;margin-top:6px;color:var(--muted)}
+.nav{display:block}.nav-group-label{padding:0 12px 10px;color:var(--muted);font-size:10px;letter-spacing:1px;font-weight:500}.nav a{gap:12px;min-height:44px;padding:10px 12px;margin:4px 0;font-size:13px;font-weight:500;border-radius:7px;border:1px solid transparent;transition:background .16s,color .16s}.nav .icon{width:18px;height:18px;color:var(--muted)}.nav a:hover,.nav a.app-entry:hover{background:#e9eaed;color:var(--ink)}.nav a[aria-current=page],.nav a.app-entry[aria-current=page]{background:var(--graphite);color:#fff;border-color:var(--graphite);box-shadow:none}.nav a[aria-current=page] .icon{color:#f3f3f4}.nav-separator{margin:24px 12px 20px}.program-list{gap:0}.program-list a{min-height:44px;margin:4px 0}.program-group .nav-group-label{margin:0}
+.sidebar-foot{padding:20px 8px 0;margin-top:auto}.sidebar-foot strong{font:500 11px/1.5 'DejaVu Sans Mono',monospace;letter-spacing:.1px}.sidebar-foot p{font-size:10px;margin:5px 0}.sidebar-foot p:last-child{color:#7b7e84}.version-dot{width:6px;height:6px;background:#777c84}
+.workspace{margin-left:224px}.topbar{height:64px;padding:0 36px;background:var(--shell);box-shadow:none}.breadcrumb{font-size:12px}.breadcrumb>span{margin:0 8px;color:#a0a3a9}.top-actions{gap:16px}.top-actions button{min-height:36px;font-size:12px;padding:6px 12px;background:transparent}.demo-chip{display:inline-flex;align-items:center;gap:7px;padding:0;border:0;font-size:11px}.demo-chip>span{width:5px;height:5px;background:#858991;border-radius:50%}
+.content{max-width:1440px;padding:32px 36px 24px}.heading{margin-bottom:24px;gap:20px}.heading .eyebrow{display:none}.heading p{font-size:13px;margin-top:8px;max-width:680px}.heading>button{flex-shrink:0}.panel{padding:24px;box-shadow:none}.grid{gap:20px;grid-template-columns:minmax(0,1.55fr) minmax(280px,1fr)}.grid.equal{grid-template-columns:repeat(2,minmax(0,1fr))}.section{margin-top:24px}.section-head{gap:12px;margin-bottom:16px}.section-head .eyebrow{margin:0}.small,small{font-size:12px}
+.tag{padding:3px 8px;border-radius:5px;font-size:11px;font-weight:500;border-color:transparent;background:var(--instrument-surface)}.tag.ok{color:#286250;background:#edf5f1;border-color:transparent}.tag.warn,.tag.bad{border-color:transparent}.row{font-size:13px;padding:16px 0}.row small{font-size:12px;margin-top:4px}.row strong{font-weight:600}.row>.tag{flex-shrink:0;max-width:100%}
+.subnav{gap:24px;flex-wrap:wrap;margin:0 0 24px;padding:0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;width:100%}.subnav a{min-height:44px;padding:0 0 12px;color:var(--muted);font-size:13px;font-weight:500;border:0;border-bottom:2px solid transparent;border-radius:0}.subnav a:hover{background:transparent;color:var(--ink)}.subnav a[aria-current=page]{background:transparent;color:var(--ink);border-color:var(--ink);font-weight:650;box-shadow:none}
+.overview-primary{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,1fr);gap:20px}
+.hero.device-identity{min-height:300px;padding:28px 28px 0;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px 0;background:radial-gradient(ellipse at 80% 12%,#34373d 0,transparent 60%),var(--graphite);border-color:#2c2f35}.hero:before{background-size:36px 36px;background-image:linear-gradient(#ffffff04 1px,transparent 1px),linear-gradient(90deg,#ffffff04 1px,transparent 1px);mask-image:linear-gradient(to left,#000,transparent)}.hero:after{background:linear-gradient(115deg,transparent 40%,#ffffff07 48%,#ffffff0d 50%,#ffffff05 53%,transparent 61%)}
+.hero-copy,.device-art,.device-nameplate{z-index:1}.hero .eyebrow{font-size:9px;letter-spacing:1.8px;color:#afb4be;margin-bottom:16px}.device-state{display:flex;gap:7px;align-items:center;font-size:11px;color:#e2e4e9}.device-state i{width:5px;height:5px;border-radius:50%;background:#b8d3c5}.device-state>span{color:#aab0b9;font-size:9px;margin-left:2px}
+.hero h2{font-size:34px;line-height:1.15;letter-spacing:-1.2px;font-weight:500;margin:18px 0 8px}.hero h2>span{display:block;font-size:12px;letter-spacing:1px;color:#c4c8d0;margin-top:10px}.hero .serial{font-size:10px;color:#9098a4;margin-top:2px}.hero-spec{margin-top:auto;padding-top:24px;display:flex;flex-direction:column;font-size:10px;color:#aeb4bf}.hero-spec strong{color:#f1f2f4;font-size:14px;font-weight:500;margin:4px 0}.hero-spec small{font-size:10px;color:#aeb4bf}.device-art{align-self:center}.device-art svg{max-width:240px;max-height:228px}.device-art>span{display:none}
+.device-nameplate{position:relative;grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--instrument-line);color:#a7aeba;font-size:9px;letter-spacing:.6px}.device-nameplate span:first-child{font-family:'DejaVu Sans Mono',monospace;letter-spacing:1.4px}
+.next-panel{display:flex;flex-direction:column;padding:24px;background:var(--panel)}.next-panel .section-head{margin-bottom:28px}.next-arrow{font-size:24px;line-height:1;color:#8b909a}.next-panel h2{font-size:24px;line-height:1.45;letter-spacing:-.7px;max-width:240px}.next-panel>p{font-size:12px;line-height:1.85;color:var(--muted);margin-top:12px}.next-action{margin:24px 0}.next-action button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left}
+.delivery-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:16px;border-top:1px solid var(--line)}.delivery-line span{display:block;color:var(--muted);font-size:10px}.delivery-line strong{font-size:12px;font-weight:500;margin-top:4px;display:block}.delivery-line a{font-size:11px;color:var(--muted);text-decoration:none;padding:12px 0;white-space:nowrap}.delivery-line a span{display:inline;font-size:14px}.delivery-line a:hover{color:var(--ink)}
+.overview-metrics{background:transparent;border:0;border-radius:0;margin:24px 0 28px;gap:0}.overview-metrics .metric{padding:0 24px;border-right:1px solid var(--line)}.overview-metrics .metric:first-child{padding-left:4px}.overview-metrics .metric:last-child{border:0;padding-right:0}.metric>span{font-size:11px}.metric strong{font-size:28px;line-height:1.5;font-weight:500;letter-spacing:-.9px;margin:6px 0;position:relative;font-variant-numeric:tabular-nums}.metric strong>span{font-size:11px;letter-spacing:0}.metric strong.metric-text{font-size:23px;letter-spacing:-.4px}.metric strong.metric-address{font-size:17px;font-family:'DejaVu Sans Mono',monospace;letter-spacing:-.6px;margin-top:12px;margin-bottom:14px}.metric small{font-size:10px}.metric-dot{display:inline-block;vertical-align:middle;width:5px;height:5px;border-radius:50%;background:#568775;margin-left:12px}.overview-metrics .meter{margin:0 0 8px;height:3px;max-width:140px;background:#dfe2e6}.meter i{background:#848b96}
+.overview-secondary{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,1fr);gap:20px}.connection-panel .section-head,.quick-panel .section-head{margin-bottom:8px}.text-link{font-size:11px;color:var(--muted);text-decoration:none;min-height:40px;display:inline-flex;align-items:center;gap:8px}.text-link:hover{color:var(--ink)}.connection-list .row{padding:14px 0}.connection-list .row:last-child{padding-bottom:0}.quiet-label{color:var(--muted);font-size:10px;font-weight:400}
+.tool-link{display:flex;align-items:center;gap:12px;text-decoration:none;padding:20px 0;border-bottom:1px solid var(--line)}.tool-link:last-child{border:0;padding-bottom:8px}.tool-link>.icon{width:32px;height:32px;padding:6px;border-radius:7px;color:#626975;background:var(--instrument-surface)}.tool-link strong{font-size:13px;font-weight:500;display:block}.tool-link small{font-size:11px;color:var(--muted);margin-top:4px;display:block}.link-arrow{color:#9096a0;margin-left:auto}.tool-link:hover strong{text-decoration:underline;text-underline-offset:4px}
+.program-layout{grid-template-columns:minmax(0,1.8fr) minmax(280px,1fr)}.program-guide{padding:28px}.program-heading .eyebrow{margin-bottom:4px;font-size:9px}.program-heading h2{font-size:20px}.program-symbol{width:52px;height:52px;background:var(--graphite);color:#f0f2f5;border:0;border-radius:12px}.program-description{font-size:12px;margin:20px 0 0;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.program-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 24px;margin:28px 0 32px}.program-flow li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;min-width:0;align-items:start;border:0;padding:0}.program-step-number{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--instrument-surface);font:10px/1 'DejaVu Sans Mono',monospace;color:#656b75}.program-flow h3{font-size:14px;margin:2px 0 6px;line-height:1.6;font-weight:600}.program-flow p{font-size:12px;line-height:1.7}.program-action .small{font-size:11px}
+.program-status{background:#edeef0;border-color:transparent}.program-status h2{font-size:16px}.program-status .row>.tag:not(.warn){background:transparent;color:var(--muted);padding-right:0}.program-details{font-size:12px}
+.program-placeholder{padding:0;display:grid;grid-template-columns:minmax(240px,.8fr) minmax(0,1.2fr);min-height:340px;overflow:hidden;text-align:left;align-items:stretch}
+.program-preview{background:radial-gradient(ellipse at 50% 35%,#373b43,transparent 70%),var(--graphite);color:#a5acb9;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:28px;gap:24px}.preview-label,.preview-caption{font:9px/1.5 'DejaVu Sans Mono',monospace;letter-spacing:1.5px}.preview-label{align-self:flex-start}.module-frame{width:132px;height:132px;display:grid;place-items:center;border:1px solid var(--instrument-line);border-radius:24px;box-shadow:0 0 0 12px #ffffff03,0 0 0 24px #ffffff02}.module-frame .icon{width:56px;height:56px;color:#d7dce5}.module-frame svg{stroke-width:1}
+.placeholder-copy{padding:48px;align-self:center}.release-label{display:inline-flex;font-size:10px;color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:4px;margin-bottom:20px}.placeholder-copy h2{font-size:26px}.placeholder-copy p{font-size:13px;max-width:400px}.placeholder-note{padding-top:28px;margin-top:28px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+.strip{font-size:12px;background:var(--instrument-surface);color:var(--label-ink);line-height:1.8}.boundary{background:var(--instrument-surface);border:1px solid transparent}.boundary h3{margin-bottom:8px}.boundary p{font-size:12px}
+.mini-grid{gap:16px}.mini-card{border-radius:12px;padding:24px;background:var(--panel)}.mini-card .code{font-size:9px}.mini-card h3{margin:16px 0 8px}.mini-card p{margin-bottom:20px}.system-version{font:500 28px/1.3 'DejaVu Sans Mono',monospace;letter-spacing:-1px;margin:16px 0}.storage-bar{height:6px;border-radius:4px;background:var(--instrument-surface);margin:20px 0 12px}.storage-bar i{background:#686e79}
+label.field input,label.field select{background:var(--control-fill);border-color:#d3d6dc}.summary-list{font-size:13px;gap:16px}.filebox{background:var(--control-fill);border-color:#bfc4cc}.samples{gap:16px}.sample{background:var(--control-fill);border-color:transparent}.sample h3{font-size:16px}.sample .code{font-size:9px}.sample .actions{gap:8px}.footnote{margin-top:24px;padding-top:16px;font-size:10px;gap:12px}.footnote span span{margin:0 8px;color:#b0b4bd}
+@media(min-width:1600px){.content{padding-top:40px}.hero.device-identity{min-height:328px}.hero h2{font-size:40px}}
+@media(max-width:1100px){
+.sidebar{width:200px;padding:24px 12px 16px}.workspace{margin-left:200px}.brand{gap:10px;margin-inline:4px}.brand-copy strong{font-size:17px}.brand-copy p{font-size:8px}.brand-art{width:40px;height:48px}.content{padding:28px 24px}.topbar{padding:0 24px}
+.grid,.overview-primary,.overview-secondary,.program-layout{grid-template-columns:minmax(0,1fr)}.grid.equal{grid-template-columns:repeat(2,minmax(0,1fr))}
+.next-panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,.7fr);gap:0 24px}.next-panel .section-head{grid-column:1/-1;margin-bottom:16px}.next-panel h2{max-width:none;font-size:22px}.next-panel>p{grid-column:1;grid-row:3;margin-top:8px}.next-action{grid-column:2;grid-row:2/4;margin:auto 0}.delivery-line{grid-column:1/-1;margin-top:20px}
+.overview-metrics .metric{padding:0 16px}.metric strong.metric-address{font-size:14px;letter-spacing:-.6px}.metric strong{font-size:26px}.metric strong.metric-text{font-size:21px}.hero.device-identity{grid-template-columns:1.15fr 1fr;min-height:300px;padding:24px 24px 0}
+.program-status{padding:24px}.program-status .row{padding:12px 0}.program-placeholder{grid-template-columns:minmax(190px,.8fr) minmax(0,1.2fr)}.placeholder-copy{padding:32px}.placeholder-copy h2{font-size:23px}
+}
+@media(max-width:800px){
+.sidebar{position:static;width:auto;height:auto;padding:16px 20px;border-right:0;border-bottom:1px solid var(--line)}.brand{margin:0 0 20px;gap:10px}.brand-art{width:34px;height:40px}.brand-copy strong{font-size:18px}.brand-copy p{display:block;font-size:8px;margin-top:4px}.sidebar-foot{display:none}
+.nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.common-group:only-child{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.common-group:only-child .nav-group-label{grid-column:1/-1}.nav-group-label,.program-group .nav-group-label{display:block;padding:0 8px 6px;font-size:9px}.nav-separator{display:none}.nav a,.program-list a{margin:2px 0;padding:10px 8px;gap:8px;font-size:12px;min-height:44px}.nav .icon{width:16px;height:16px}
+.workspace{margin:0}.topbar{min-height:52px;height:52px;padding:0 20px}.top-actions{justify-content:space-between}.top-actions .demo-chip{display:inline-flex}.top-actions button{font-size:11px;min-height:36px}.content{padding:24px 20px}.heading h1{font-size:25px}.heading p{font-size:12px}.heading{gap:16px}.grid,.grid.equal,.overview-primary,.overview-secondary,.program-layout{grid-template-columns:1fr}.panel{padding:20px}
+.hero.device-identity{padding:24px 24px 0;min-height:300px}.hero h2{font-size:34px}.hero-spec{padding-top:24px}.device-art svg{max-height:210px}.next-panel{padding:24px}.next-panel h2{font-size:22px}.next-action button{font-size:12px}.delivery-line{padding-top:12px}
+.overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:20px;margin:24px 0}.overview-metrics .metric{padding:0 20px!important;border:0!important}.overview-metrics .metric:nth-child(odd){padding-left:4px!important;border-right:1px solid var(--line)!important}.metric strong.metric-address{font-size:17px}.metric strong.metric-text{font-size:24px}
+.subnav{gap:24px;overflow-x:auto;flex-wrap:nowrap}.program-flow{gap:28px 20px}.program-guide,.program-status{padding:24px}.program-placeholder{padding:0;grid-template-columns:1fr}.program-preview{min-height:240px;padding:24px}.module-frame{width:96px;height:96px;border-radius:20px}.module-frame .icon{width:40px;height:40px}.placeholder-copy{padding:32px}.placeholder-note{margin-top:24px;padding-top:24px}.preview-caption{font-size:8px}.footnote{flex-direction:column;gap:4px}.service-table .row>div:first-child{max-width:65%}.summary-list{grid-template-columns:92px minmax(0,1fr)}
+}
+@media(max-width:420px){
+.sidebar{padding:16px}.content{padding:24px 16px}.topbar{padding:0 16px}.heading h1{font-size:24px}.panel{padding:20px}.program-placeholder{padding:0}.hero.device-identity{grid-template-columns:1fr;min-height:300px;padding:24px 24px 0}.device-art{display:none}.device-nameplate{font-size:8px;letter-spacing:0;gap:8px}.device-nameplate span:first-child{letter-spacing:.6px}.hero-spec{padding-top:20px}
+.next-panel{display:flex}.next-panel .section-head{margin-bottom:20px}.next-panel>p{margin-top:12px}.next-action{margin:24px 0}.delivery-line{margin-top:0;width:100%}.next-panel h2{font-size:23px}.program-heading{gap:12px}.program-heading h2{font-size:18px}.program-symbol{width:44px;height:44px;border-radius:10px}.program-flow{grid-template-columns:1fr;gap:24px}.program-description{font-size:12px}.program-action{align-items:stretch;flex-direction:column;gap:12px}.program-action button{width:100%;text-align:left}.placeholder-copy{padding:28px}
+.connection-panel .section-head{gap:8px}.row{gap:12px}.row small{font-size:11px}.row>.tag{font-size:10px}.section-head{flex-wrap:wrap}.metric strong.metric-address{font-size:14px}.subnav{gap:20px}.common-group:only-child{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* ONE-G silver product treatment. Reference: Apple product-page hierarchy.
+   Final presentation layer; no remote assets, Apple assets or behavior changes. */
+:root{--shell:#f5f5f7;--ink:#1d1d1f;--muted:#6e6e73;--line:rgba(29,29,31,.09);--graphite:#242426;--instrument-surface:#f0f0f2;--control-fill:#f5f5f7;--radius:24px;--product-silver:#e9eaed;--surface-shadow:0 2px 6px #1e1e2306,0 12px 36px #1e1e2306;--quiet-shadow:0 1px 3px #1e1e2310}
+body{background:var(--shell);font-family:-apple-system,BlinkMacSystemFont,'Noto Sans CJK SC','Microsoft YaHei',sans-serif}
+.sidebar{background:var(--shell)}.brand{margin-bottom:40px}.brand-copy p{font-family:inherit;letter-spacing:1.4px;font-size:8px}
+.nav a,.program-list a{border-radius:11px;padding-inline:14px}
+.nav a[aria-current=page],.nav a.app-entry[aria-current=page]{background:var(--panel);color:var(--ink);border-color:transparent;font-weight:650;box-shadow:var(--quiet-shadow)}
+.nav a[aria-current=page] .icon{color:var(--ink)}.nav a:hover,.nav a.app-entry:hover{background:#eaeaed}.nav a[aria-current=page]:hover{background:var(--panel)}
+.nav-group-label{letter-spacing:.2px;font-size:11px}.nav-separator{background:transparent;margin-block:16px}
+.topbar{background:var(--shell);border-color:transparent}.top-actions button{background:var(--panel);border:0;border-radius:999px;box-shadow:var(--quiet-shadow)}
+.content{padding:36px 36px 28px}.heading{margin-bottom:28px}.heading h1{font-size:34px;font-weight:650;letter-spacing:-1.1px}.heading p{font-size:14px;line-height:1.7}
+button{border-radius:999px;font-weight:500;padding-inline:20px}
+button.primary{background:var(--ink);border-color:var(--ink)}button.primary:hover{background:#353538;border-color:#353538}
+button.primary:disabled{background:#e4e4e7;border-color:#e4e4e7;color:#747478}
+.heading>button{background:transparent;border-color:#c6c6cc}.heading>button.primary{background:var(--ink);border-color:var(--ink)}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #707076;outline-offset:4px}
+.panel{border-color:transparent;border-radius:var(--radius);box-shadow:var(--surface-shadow);padding:28px}
+h2{font-size:20px;font-weight:650;letter-spacing:-.5px}
+.grid,.overview-primary,.overview-secondary{gap:24px}
+.hero.device-identity{background:radial-gradient(ellipse at 70% 25%,#fff,transparent 65%),linear-gradient(135deg,#fff,#f0f0f2);color:var(--ink);border-color:transparent;min-height:360px;padding:36px 32px 0;gap:24px 8px;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.hero:before,.hero:after{content:none;animation:none}
+.hero .eyebrow{color:var(--muted);font-family:inherit;font-size:11px;font-weight:500;letter-spacing:.8px;margin-bottom:16px}
+.device-state{color:#515154;font-size:11px}.device-state i{background:#4d8068}.device-state>span{color:var(--muted);font-size:10px}
+.hero h2{font-size:clamp(36px,3.4vw,52px);line-height:1.08;font-weight:650;letter-spacing:-1.9px;margin:24px 0 10px}
+.hero h2>span{color:var(--muted);font-size:16px;line-height:1.5;font-weight:400;letter-spacing:0;margin-top:12px}
+.hero .serial{color:var(--muted);font-size:10px}.hero-spec{padding-top:28px;color:var(--muted)}.hero-spec>span{font-size:11px}.hero-spec strong{color:var(--ink);font-size:15px;font-weight:600;margin:5px 0}.hero-spec small{color:var(--muted);font-size:11px}
+.device-art{width:100%;padding-bottom:8px}.device-art svg{max-width:300px;max-height:288px;filter:drop-shadow(0 16px 12px #1d1d1f21)}
+.device-nameplate{padding:14px 0;border-color:var(--line);color:var(--muted);font-size:10px;letter-spacing:0}.device-nameplate span:first-child{font-family:inherit;letter-spacing:0}
+.next-panel{padding:32px 28px}.next-panel .eyebrow{font-size:12px;font-weight:500;letter-spacing:0}.next-arrow{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:19px;background:var(--shell);color:var(--muted)}
+.next-panel h2{font-size:28px;font-weight:650;line-height:1.4;letter-spacing:-.8px}.next-panel>p{font-size:13px;line-height:1.85;margin-top:16px}.next-action{margin:28px 0}.next-action button{min-height:46px}.delivery-line{padding-top:20px}.delivery-line strong{font-size:13px}.delivery-line span,.delivery-line a{font-size:11px}
+.overview-metrics{background:var(--panel);border-radius:20px;padding:24px 8px;margin:24px 0;box-shadow:var(--surface-shadow)}
+.overview-metrics .metric,.overview-metrics .metric:first-child,.overview-metrics .metric:last-child{padding-inline:24px}
+.metric>span{font-size:12px}.metric strong{font-family:inherit;font-size:32px;font-weight:600;line-height:1.4;letter-spacing:-1px;margin-block:8px}.metric strong.metric-text{font-size:26px;font-weight:500}.metric strong.metric-address{font-family:inherit;font-size:19px;font-weight:500;letter-spacing:-.35px;margin-top:14px}.metric small{font-size:11px}.metric strong>span{font-weight:400}
+.tag{border-radius:999px;padding:4px 10px;font-size:11px}.connection-list .row{padding-block:16px}
+.tool-link{padding-block:24px;gap:16px}.tool-link>.icon{width:40px;height:40px;padding:10px;border-radius:12px;color:var(--ink)}.tool-link strong{font-size:14px}.tool-link small{font-size:12px;line-height:1.7}.text-link,.quiet-label{font-size:12px}
+.footnote{border:0;margin-top:20px;padding-top:8px}
+.program-guide{padding:32px}.program-heading h2{font-size:24px;font-weight:600}.program-symbol{width:56px;height:56px;border-radius:16px;background:linear-gradient(150deg,#55555b,#242426)}
+.program-description{font-size:13px;padding-bottom:28px;line-height:1.8}.program-flow{margin-block:32px;gap:32px 28px}.program-flow li{grid-template-columns:32px minmax(0,1fr);gap:12px}
+.program-step-number{width:32px;height:32px;font-family:inherit;font-size:12px;font-weight:600;background:var(--shell);color:var(--muted)}.program-flow h3{font-size:15px;margin-top:3px}.program-flow p{font-size:13px}
+.program-status{background:#ececef;box-shadow:none}.program-status h2{font-size:18px}
+.program-placeholder{padding:0;min-height:380px}.program-preview{background:radial-gradient(ellipse at center,#fff,transparent 72%),var(--product-silver);color:var(--muted);padding:32px}
+.preview-label,.preview-caption{font-family:inherit;letter-spacing:.8px;font-size:10px}
+.module-frame{width:136px;height:136px;border:1px solid #ffffffe6;border-radius:32px;background:linear-gradient(145deg,#fff,#e6e6eb);box-shadow:0 14px 32px #1d1d1f14,inset 0 1px 2px #fff}
+.module-frame .icon{width:60px;height:60px;color:#4a4a50}.module-frame svg{stroke-width:1.25}
+.placeholder-copy h2{font-size:32px;letter-spacing:-1px}.placeholder-copy p{font-size:14px;line-height:1.8}.release-label{border:0;background:var(--shell);border-radius:999px;font-size:11px;padding:5px 12px}.placeholder-note{font-size:12px}
+.subnav{border:0;width:max-content;max-width:100%;padding:4px;gap:4px;border-radius:999px;background:#e9e9ec}.subnav a{padding:10px 18px;min-height:44px;border:0;border-radius:999px;font-size:13px}.subnav a[aria-current=page]{background:var(--panel);box-shadow:var(--quiet-shadow)}.subnav a:hover{background:#f0f0f3}
+.mini-card,.sample{border-radius:20px;border-color:transparent}.mini-card{box-shadow:var(--surface-shadow)}.boundary{box-shadow:none}.filebox{border-radius:16px}.strip{border-radius:12px}label.field input,label.field select{border-radius:12px}
+dialog{border:0;border-radius:24px;padding:28px;box-shadow:0 24px 80px #0003}.modal-head button{min-width:44px;min-height:44px;border:0;background:var(--shell);padding:8px}
+@media(max-width:1250px) and (min-width:1101px){
+.hero.device-identity{padding-inline:28px;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}.hero h2{font-size:38px}.next-panel h2{font-size:25px}.metric strong.metric-address{font-size:16px}
+}
+@media(max-width:1100px){
+.content{padding:28px 24px}.hero.device-identity{min-height:340px}.hero h2{font-size:48px}.next-panel h2{max-width:none}.next-action{margin:auto 0}.overview-metrics .metric{padding-inline:16px}.metric strong.metric-address{font-size:15px}.placeholder-copy h2{font-size:27px}
+}
+@media(max-width:800px){
+.brand{margin-bottom:20px}.nav a,.program-list a{padding-inline:10px}.content{padding:28px 20px}.heading h1{font-size:30px}.heading p{font-size:13px}.panel{padding:24px;border-radius:20px}
+.hero.device-identity{padding:28px 24px 0;min-height:340px}.hero h2{font-size:42px}.hero h2>span{font-size:15px}.device-art svg{max-height:250px}.next-panel{padding:28px}.next-panel h2{font-size:26px}
+.overview-metrics{padding:24px;row-gap:24px}.metric strong.metric-address{font-size:17px}
+.program-placeholder{padding:0;grid-template-columns:1fr}.program-preview{min-height:256px}.module-frame{width:112px;height:112px;border-radius:28px}.module-frame .icon{width:48px;height:48px}.program-heading h2{font-size:22px}
+.subnav{width:100%;border-radius:16px}.subnav a{padding-inline:12px}
+}
+@media(max-width:420px){
+.content{padding:24px 16px}.heading{margin-bottom:24px}.heading h1{font-size:28px}.heading>button{min-height:44px;padding-inline:14px;font-size:12px}
+.hero.device-identity{min-height:320px;padding:28px 24px 0;grid-template-columns:1fr}.hero h2{font-size:42px;margin-top:24px}.hero-spec{padding-top:24px}.device-nameplate{font-size:9px}
+.next-panel{padding:24px}.next-action{margin:24px 0}.overview-metrics{padding:24px 16px}.overview-metrics .metric{padding-right:0!important;padding-left:16px!important}.metric strong.metric-address{font-size:15px}.metric strong{font-size:30px}.metric small{font-size:10px}.metric strong.metric-text{font-size:24px}
+.program-guide{padding:24px}.program-heading h2{font-size:20px}.program-symbol{width:48px;height:48px;border-radius:14px}.program-placeholder{padding:0}.placeholder-copy{padding:28px}.placeholder-copy h2{font-size:28px}.text-link,.quiet-label{font-size:11px}.tool-link small{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Compact brand lockup: original symbol + one readable wordmark. */
+.sidebar .brand{display:flex;align-items:center;gap:12px;margin:0 8px 40px;min-height:48px}
+.brand .brand-mark{display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;overflow:hidden;border-radius:14px;background:#000;box-shadow:0 0 0 1px #00000008,0 3px 8px #0000000d}
+.brand .brand-art{display:block;width:100%;height:100%;border:0;border-radius:0;box-shadow:none;background:#000}
+.brand .brand-copy{display:flex;flex-direction:column;justify-content:center;gap:6px;min-width:0}
+.brand .brand-copy strong{font-family:inherit;font-size:20px;line-height:1.15;font-weight:600;letter-spacing:-.55px;white-space:nowrap}
+.brand .brand-copy p{display:block;font-family:inherit;font-size:9px;line-height:1.25;font-weight:500;letter-spacing:1.15px;color:var(--muted);margin:0;white-space:nowrap}
+@media(max-width:1100px) and (min-width:801px){
+  .sidebar .brand{gap:10px;margin-inline:4px}
+  .brand .brand-mark{flex-basis:44px;width:44px;height:44px;border-radius:13px}
+  .brand .brand-copy strong{font-size:18px}
+  .brand .brand-copy p{font-size:8px;letter-spacing:1px}
+}
+@media(max-width:800px){
+  .sidebar .brand{gap:12px;margin:0 0 24px;min-height:44px}
+  .brand .brand-mark{flex-basis:44px;width:44px;height:44px;border-radius:13px}
+  .brand .brand-copy strong{font-size:20px}
+}
+</style>
+<style id="one-g-visual-refinement">
+/* RobotDock visual refinement. Presentation only; all content and behavior are retained. */
+:root {
+  --shell: #f3f5f6;
+  --panel: #ffffff;
+  --ink: #15242b;
+  --muted: #607078;
+  --line: #e0e6e9;
+  --graphite: #15242b;
+  --silver: #dce3e7;
+  --instrument-surface: #eef2f4;
+  --instrument-line: rgba(21, 36, 43, .12);
+  --label-ink: #445861;
+  --control-fill: #f7f9fa;
+  --product-silver: #edf1f3;
+  --accent: #087d88;
+  --accent-hover: #066b75;
+  --accent-pale: #e8f4f4;
+  --radius: 18px;
+  --surface-shadow: 0 3px 14px rgba(21, 36, 43, .025);
+  --quiet-shadow: 0 1px 3px rgba(21, 36, 43, .04);
+}
+
+/* Readable, local system typography. */
+body { background: var(--shell); font-size: 14px; line-height: 1.7; }
+h1, .heading h1 { font-size: 30px; font-weight: 650; letter-spacing: -.7px; }
+h2 { font-size: 20px; line-height: 1.45; font-weight: 650; letter-spacing: -.3px; }
+h3 { font-size: 16px; line-height: 1.5; }
+small, .small { font-size: 12px; }
+.eyebrow, .hero .eyebrow, .program-heading .eyebrow { font-size: 12px; letter-spacing: .06em; }
+.mono { font-size: 12px; font-variant-numeric: tabular-nums; }
+.heading p { font-size: 14px; line-height: 1.8; color: var(--muted); }
+.heading { margin-bottom: 26px; }
+.content { padding: 32px 36px 28px; }
+
+/* The monochrome logo remains separate from the interface accent. */
+.sidebar { background: #f8fafb; border-right: 1px solid var(--line); }
+.sidebar .brand { gap: 12px; margin: 0 4px 36px; }
+.brand .brand-mark { flex-basis: 44px; width: 44px; height: 44px; border-radius: 0; background: transparent; box-shadow: none; }
+.brand .brand-art { background: transparent; }
+.brand .brand-copy { gap: 5px; }
+.brand .brand-copy strong { font-size: 20px; font-weight: 650; letter-spacing: -.6px; }
+.brand .brand-copy p { font-size: 11px; line-height: 1.4; letter-spacing: .025em; }
+.nav-group-label, .program-group .nav-group-label { font-size: 12px; letter-spacing: .02em; color: #73818a; }
+.nav a, .program-list a { min-height: 46px; padding: 11px 12px; border-radius: 10px; font-size: 14px; font-weight: 500; }
+.nav .icon { width: 18px; height: 18px; color: #6d7c85; }
+.nav a:hover, .nav a.app-entry:hover { background: #edf1f3; color: var(--ink); }
+.nav a[aria-current=page], .nav a.app-entry[aria-current=page] {
+  background: var(--accent-pale); color: var(--accent); border-color: #d0e8e8; box-shadow: none; font-weight: 650;
+}
+.nav a[aria-current=page] .icon { color: var(--accent); }
+.nav a[aria-current=page]:hover { background: #deeeee; }
+.nav-separator { margin: 22px 12px; background: var(--line); }
+.sidebar-foot { border-color: var(--line); padding: 20px 8px 0; }
+.sidebar-foot strong, .sidebar-foot p, .sidebar-foot p:last-child { font-size: 12px; color: var(--muted); }
+.sidebar-foot strong { color: var(--ink); }
+.version-dot { background: #81969e; }
+.topbar { background: var(--shell); border-bottom: 1px solid var(--line); }
+.breadcrumb, .demo-chip { font-size: 12px; }
+.demo-chip { color: var(--muted); }
+.demo-chip > span { background: #81969e; }
+.top-actions button { min-height: 38px; padding: 7px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; box-shadow: none; font-size: 13px; }
+
+/* Action controls, passive status labels and tabs have distinct shapes. */
+button { border-radius: 10px; min-height: 44px; padding: 10px 18px; font-size: 14px; font-weight: 600; border-color: #d5dfe3; }
+button:hover { background: #edf3f5; border-color: #b7c8ce; }
+button:active { background: #e2ecef; }
+button.primary, .heading > button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary:hover, .heading > button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+button:disabled, button.primary:disabled { color: #667780; background: #e8edef; border-color: #e0e6e9; cursor: not-allowed; }
+.heading > button { background: var(--panel); border-color: #d5dfe3; }
+.heading > button:hover { background: #edf3f5; border-color: #b7c8ce; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 4px;
+}
+label.field { font-size: 14px; }
+label.field input, label.field select { border-radius: 10px; border-color: #cbd7dd; background: var(--control-fill); font-size: 14px; }
+.check-row input, .toggle-row input { accent-color: var(--accent); }
+.tag, .row > .tag { font-size: 12px; line-height: 1.6; padding: 4px 10px; border-radius: 999px; }
+.tag { color: #506570; background: #edf2f4; }
+.tag.ok { color: #256348; background: #eaf4ee; }
+.tag.warn { color: #80501c; background: #fbf0df; }
+.tag.bad { color: #a53333; background: #fceeee; }
+.subnav { padding: 4px; gap: 4px; border: 1px solid #dfe7ea; border-radius: 12px; background: #eaf0f2; }
+.subnav a { padding: 9px 18px; min-height: 42px; border-radius: 8px; font-size: 14px; color: var(--muted); }
+.subnav a[aria-current=page] { color: var(--accent); background: #fff; box-shadow: var(--quiet-shadow); }
+.subnav a:hover { background: #f5f9fa; color: var(--ink); }
+
+/* Quiet panel boundaries keep operational information easy to scan. */
+.panel { padding: 26px; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--surface-shadow); }
+.grid, .overview-primary, .overview-secondary { gap: 22px; }
+.row { padding: 17px 0; font-size: 14px; border-color: #e7ecef; }
+.row small { font-size: 12px; line-height: 1.75; }
+.row > div { overflow-wrap: anywhere; }
+.summary-list { font-size: 14px; gap: 16px; }
+.section-head { gap: 12px; }
+.strip { border-radius: 10px; background: #edf2f4; font-size: 13px; line-height: 1.8; }
+.strip.warn { background: var(--warn-bg); color: var(--warn); }
+.strip.bad { background: var(--bad-bg); color: var(--bad); }
+.boundary { background: #edf2f4; box-shadow: none; }
+.boundary p, .notice { font-size: 13px; line-height: 1.8; }
+.mini-card, .sample { border: 1px solid var(--line); border-radius: 16px; box-shadow: none; }
+.mini-card { padding: 24px; }
+.mini-card .code, .sample .code, .app-number { font-size: 12px; letter-spacing: .04em; }
+.mini-card p, .sample p { font-size: 13px; line-height: 1.8; }
+.sample { background: #f7f9fa; }
+.sample button { font-size: 13px; border-radius: 10px; }
+.filebox { border-radius: 14px; background: #f7f9fa; border-color: #b9cbd2; }
+.filebox p, .filebox input, .step-card p { font-size: 13px; }
+.step-card.current { border-color: var(--accent); }
+.storage-bar i, .meter i { background: #65959d; }
+pre { border-radius: 12px; background: #1b2d35; color: #e1edf1; font-size: 13px; }
+.log { font-size: 13px; }
+.footnote { font-size: 12px; line-height: 1.7; margin-top: 24px; padding-top: 12px; color: var(--muted); }
+
+/* Device overview: restrained silver surface, clear figures and one primary action. */
+.hero.device-identity {
+  min-height: 344px; padding: 30px 28px 0; gap: 24px 12px;
+  background: radial-gradient(ellipse at 72% 20%, #fff 0, transparent 62%), linear-gradient(135deg, #fdfefe, #eaf0f3);
+  border-color: #dce5e9; color: var(--ink);
+}
+.hero .eyebrow { color: #667b85; margin-bottom: 16px; }
+.device-state { font-size: 12px; color: #4e656f; }
+.device-state > span { font-size: 12px; color: var(--muted); }
+.device-state i { width: 6px; height: 6px; background: #47876b; }
+.hero h2 { font-size: clamp(34px, 3.05vw, 46px); font-weight: 650; line-height: 1.1; letter-spacing: -1.4px; margin: 22px 0 10px; }
+.hero h2 > span { font-size: 16px; line-height: 1.6; color: #5f737d; }
+.hero .serial { font-size: 12px; color: #5f737d; }
+.hero-spec { padding-top: 26px; }
+.hero-spec > span, .hero-spec small { font-size: 12px; color: #5f737d; }
+.hero-spec strong { color: var(--ink); font-size: 15px; }
+.device-art svg { filter: drop-shadow(0 15px 13px #243d4818); }
+.device-nameplate { padding: 14px 0; font-size: 12px; line-height: 1.6; letter-spacing: 0; color: #667b85; border-color: #dce5e9; }
+.next-panel { padding: 28px; }
+.next-panel .eyebrow { font-size: 12px; }
+.next-panel h2 { font-size: 26px; line-height: 1.5; letter-spacing: -.5px; max-width: none; }
+.next-panel > p { font-size: 14px; line-height: 1.85; }
+.next-arrow { background: #eef4f5; color: #617e89; }
+.next-action button { min-height: 46px; font-size: 14px; }
+.delivery-line strong { font-size: 14px; }
+.delivery-line span, .delivery-line a { font-size: 12px; }
+.delivery-line a:hover, .text-link:hover { color: var(--accent); }
+.overview-metrics { border: 1px solid var(--line); border-radius: 16px; padding: 24px 8px; box-shadow: none; }
+.metric > span, .metric small, .metric strong > span { font-size: 12px; }
+.metric strong { font-size: 30px; font-variant-numeric: tabular-nums; font-weight: 600; letter-spacing: -.7px; }
+.metric strong.metric-text { font-size: 24px; }
+.metric strong.metric-address { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 17px; letter-spacing: -.6px; overflow-wrap: anywhere; }
+.overview-metrics .meter { height: 4px; }
+.connection-list .row { padding: 17px 0; }
+.text-link, .quiet-label { font-size: 12px; }
+.tool-link { padding: 22px 0; gap: 14px; }
+.tool-link > .icon { border-radius: 10px; color: #577681; background: #edf3f5; }
+.tool-link strong { font-size: 14px; font-weight: 600; }
+.tool-link small { font-size: 12px; line-height: 1.8; }
+.tool-link:hover strong, .tool-link:hover .link-arrow { color: var(--accent); }
+
+/* Program and dialog surfaces follow the same type and spacing system. */
+.program-guide { padding: 28px; }
+.program-heading h2 { font-size: 23px; }
+.program-symbol { border-radius: 13px; background: #203b46; }
+.program-description, .program-flow p { font-size: 14px; line-height: 1.8; }
+.program-flow h3 { font-size: 15px; }
+.program-step-number { background: var(--accent-pale); color: var(--accent); font-size: 12px; border-radius: 10px; }
+.program-action .small, .program-details { font-size: 12px; }
+.program-status { background: #edf2f4; border-color: #e0e7eb; box-shadow: none; }
+.program-status .row > .tag:not(.warn) { padding-right: 0; }
+.program-placeholder { padding: 0; }
+.program-preview { background: radial-gradient(ellipse at center, #fff, transparent 74%), #eaf0f3; }
+.preview-label, .preview-caption { font-size: 12px; letter-spacing: .05em; }
+.module-frame { border-radius: 24px; background: linear-gradient(145deg, #fff, #e3eaee); box-shadow: 0 10px 24px #243d4810, inset 0 1px 2px #fff; }
+.module-frame .icon { color: #496671; }
+.placeholder-copy h2 { font-size: 28px; }
+.placeholder-copy p { font-size: 14px; }
+.release-label, .placeholder-note { font-size: 12px; }
+.release-label { border-radius: 7px; background: #edf3f5; color: #617681; }
+dialog { border: 1px solid var(--line); border-radius: 20px; padding: 28px; box-shadow: 0 24px 80px #15242b30; }
+dialog::backdrop { background: #10263066; }
+.modal-head button { border-radius: 10px; }
+.toast { border-color: #3e5762; border-radius: 12px; background: #203640; font-size: 14px; }
+
+/* Keep the existing navigation and breakpoint behavior; adapt type and spacing only. */
+@media (max-width: 1250px) and (min-width: 1101px) {
+  .hero.device-identity { padding-inline: 24px; gap: 24px 8px; }
+  .hero h2 { font-size: 36px; }
+  .next-panel { padding: 24px; }
+  .next-panel h2 { font-size: 24px; }
+  .metric strong.metric-address { font-size: 14px; }
+  .overview-metrics .metric, .overview-metrics .metric:first-child, .overview-metrics .metric:last-child { padding-inline: 18px; }
+}
+@media (max-width: 1100px) {
+  .content { padding: 28px 24px; }
+  .sidebar .brand { gap: 10px; margin-inline: 4px; }
+  .brand .brand-copy strong { font-size: 18px; }
+  .brand .brand-copy p { font-size: 10px; letter-spacing: .015em; }
+  .hero.device-identity { min-height: 330px; }
+  .hero h2 { font-size: 42px; }
+  .next-panel h2 { font-size: 24px; }
+  .metric strong.metric-address { font-size: 15px; }
+  .overview-metrics .metric, .overview-metrics .metric:first-child, .overview-metrics .metric:last-child { padding-inline: 16px; }
+}
+@media (max-width: 800px) {
+  .sidebar { border-right: 0; }
+  .sidebar .brand { margin: 0 0 24px; gap: 12px; }
+  .brand .brand-copy strong { font-size: 20px; }
+  .brand .brand-copy p { font-size: 11px; }
+  .nav { gap: 14px; }
+  .nav a, .program-list a { min-height: 44px; padding: 10px; font-size: 13px; }
+  .nav-group-label, .program-group .nav-group-label { font-size: 12px; }
+  .content { padding: 28px 20px; }
+  .heading h1 { font-size: 28px; }
+  .heading p { font-size: 14px; }
+  .panel { padding: 24px; border-radius: 16px; }
+  .hero.device-identity { padding: 28px 24px 0; }
+  .next-panel { padding: 24px; }
+  .next-action button { font-size: 14px; }
+  .overview-metrics { padding: 24px 12px; row-gap: 24px; }
+  .overview-metrics .metric { padding: 0 16px !important; }
+  .overview-metrics .metric:nth-child(odd) { padding-left: 12px !important; }
+  .metric strong.metric-address { font-size: 16px; }
+  .subnav { width: 100%; border-radius: 12px; }
+  .subnav a { padding-inline: 14px; }
+  .program-placeholder { padding: 0; }
+  .program-heading h2 { font-size: 22px; }
+  .service-table .row > div:first-child { max-width: none; flex: 1 1 55%; }
+  .service-table .row > .tag { flex: 0 1 auto; white-space: normal; text-align: center; }
+  .footnote { gap: 5px; }
+}
+@media (max-width: 420px) {
+  .content { padding: 24px 16px; }
+  .heading h1 { font-size: 27px; }
+  .heading > button { font-size: 13px; }
+  .panel { padding: 20px; }
+  .hero.device-identity { padding: 26px 22px 0; min-height: 324px; }
+  .hero h2 { font-size: 40px; }
+  .device-nameplate { font-size: 12px; gap: 8px; flex-wrap: wrap; }
+  .device-nameplate span:first-child { letter-spacing: 0; }
+  .next-panel h2 { font-size: 24px; }
+  .next-panel > p { font-size: 14px; }
+  .overview-metrics { padding: 22px 8px; }
+  .overview-metrics .metric { padding: 0 12px !important; }
+  .overview-metrics .metric:nth-child(odd) { padding-left: 8px !important; }
+  .metric strong { font-size: 28px; }
+  .metric strong.metric-text { font-size: 23px; }
+  .metric strong.metric-address { font-size: 13px; letter-spacing: -.5px; }
+  .metric small, .row small, .row > .tag, .text-link, .quiet-label, .tool-link small { font-size: 12px; }
+  .row { gap: 10px; }
+  .subnav { gap: 3px; }
+  .subnav a { font-size: 13px; padding-inline: 12px; }
+  .program-heading h2 { font-size: 20px; }
+  .program-description { font-size: 14px; }
+  .program-placeholder { padding: 0; }
+  .placeholder-copy { padding: 26px; }
+  .placeholder-copy h2 { font-size: 26px; }
+  .modal-head { gap: 12px; }
+  dialog { padding: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark"><svg class="brand-art" viewBox="180 180 1060 1060" role="img" aria-label="ONE-G Robotics" focusable="false">
+  <path d="M761.41,196.63C434.44,164.25,161.9,436.79,194.28,763.76c23.96,241.96,219.67,437.67,461.63,461.63,326.98,32.38,599.51-240.16,567.13-567.13-23.96-241.96-219.67-437.67-461.63-461.63ZM770.16,940.26c-166.37,0-300.48-138.08-294.01-305.88,5.58-144.43,137.15-276.37,281.56-282.32,135.07-5.57,250.89,79.99,291.25,200.21,14.79,44.07-17.6,89.8-64.08,89.8h-67.75c-43.37,0-73.77,22.54-80.05,55.28-8.45,44.06,25.09,82.59,67.62,82.59h51.87c33.73,0,52.76,40.33,29.94,65.17-53.71,58.47-130.7,95.15-216.36,95.15Z"/>
+</svg></span><div class="brand-copy"><strong>RobotDock</strong><p>ONE-G ROBOTICS</p></div></div>
+    <nav class="nav" id="nav" aria-label="主导航"></nav>
+    <div class="sidebar-foot">
+      <strong><span class="version-dot"></span>RD-ONEG-0001</strong>
+      <p id="tier-name">基础接入版</p>
+      <p>离线演示 · 未连接设备</p>
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <div class="breadcrumb">RobotDock <span aria-hidden="true"> / </span> <b id="crumb">设备概览</b></div>
+      <div class="top-actions"><span class="demo-chip"><span aria-hidden="true"></span>离线演示</span><button id="scenario">演示场景</button></div>
+    </header>
+    <main class="content" id="main" tabindex="-1"></main>
+  </div>
+  <dialog id="modal" aria-labelledby="modal-title">
+    <div class="modal-head"><h2 id="modal-title"></h2><button id="close-modal" aria-label="关闭对话框">✕</button></div>
+    <div id="modal-body"></div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>'use strict';
+const DEVICE='RD-ONEG-0001',KEY='robotdock-demo-v2',SIGN='DEMO-ONLY-NOT-A-REAL-SIGNATURE';
+const names={basic:'基础接入版',develop:'板载开发版',apply:'板载应用版'};
+const appDefs={teleop:{name:'五点遥操',desc:'设备准备、输入校准、闭环验证与实验记录。',installed:true},show:{name:'演示表演',desc:'管理已适配动作与预设演示流程。',installed:false},three:{name:'三点遥操',desc:'预留能力。',installed:false},gem:{name:'GEM 视频控制',desc:'预留能力。',installed:false}};
+const example=tier=>({schema:'robotdock-demo-license/v1',demo:true,device_id:DEVICE,license_id:'DEMO-'+tier.toUpperCase()+'-001',tier,features:tier==='basic'?['sdk']:tier==='develop'?['sdk','onboard']:['sdk','onboard','teleop','show'],expires_at:null,signature:SIGN});
+function validate(x){if(!x||x.schema!=='robotdock-demo-license/v1'||x.demo!==true)throw Error('不是本 Demo 支持的授权格式。请下载下方示例 JSON。');if(x.device_id!==DEVICE)throw Error('设备不匹配：此文件不属于 '+DEVICE+'。当前授权未改变。');if(!Object.hasOwn(names,x.tier))throw Error('未知交付版本。');if(typeof x.license_id!=='string'||x.license_id.length>80)throw Error('授权编号格式不正确。');if(x.signature!==SIGN)throw Error('演示签名标记不匹配。真实签名验证需由边缘端实现。');if(!Array.isArray(x.features)||x.features.some(f=>!['sdk','onboard',...Object.keys(appDefs)].includes(f))||new Set(x.features).size!==x.features.length||!x.features.includes('sdk'))throw Error('能力清单无效。');if((x.tier==='basic'&&x.features.some(f=>f!=='sdk'))||(x.tier!=='basic'&&!x.features.includes('onboard'))||(x.tier!=='apply'&&x.features.some(f=>Object.hasOwn(appDefs,f))))throw Error('交付版本与能力清单不一致。');if(x.expires_at!==null&&(typeof x.expires_at!=='string'||!Number.isFinite(Date.parse(x.expires_at))||Date.parse(x.expires_at)<=Date.now()))throw Error('授权已过期或有效期格式无效。');return {schema:x.schema,demo:true,device_id:DEVICE,license_id:x.license_id,tier:x.tier,features:[...x.features],expires_at:x.expires_at,signature:SIGN};}
+let license=example('basic'),hardware=true,camera=true,session=false,ip='192.168.50.10',route='overview',pending=null,pendingName='',readSeq=0,logs=[{time:'09:41:00',kind:'SYSTEM',text:'演示设备已载入；未建立任何真实连接。'}];
+try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved){license=validate(saved.license);hardware=saved.hardware!==false;camera=saved.camera!==false;if(validIP(saved.ip))ip=saved.ip;}}catch{}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify({license,hardware,camera,ip}));}catch{toast('浏览器不允许本地保存；本次修改仅在当前页面有效。');}}
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const paths={overview:'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',network:'M12 3v7 M4 20v-5h16v5 M12 15v5 M8 3h8v5H8z',devices:'M7 3h10v18H7z M3 8h4 M17 8h4 M3 16h4 M17 16h4 M10 6h4',sdk:'M8 5 2 12l6 7 M16 5l6 7-6 7 M14 3l-4 18',logs:'M5 3h14v18H5z M8 7h8 M8 12h8 M8 17h5',license:'M12 2l8 4v6c0 5-8 10-8 10S4 17 4 12V6z M8 12l3 3 5-6',apps:'M4 4h16v16H4z M9 4v16 M9 10h11',develop:'M3 5h18v14H3z M6 9l3 3-3 3 M12 15h5',info:'M12 8v1 M12 12v5 M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20'};
+const icon=k=>`<span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="${paths[k]||paths.info}"/></svg></span>`;
+const badge=(text,type='')=>`<span class="tag ${type}">${esc(text)}</span>`;
+const button=(text,action,primary=false,disabled=false)=>`<button data-action="${action}" class="${primary?'primary':''}" ${disabled?'disabled':''}>${text}</button>`;
+const row=(title,sub,right)=>`<div class="row"><div><strong>${esc(title)}</strong><small>${esc(sub)}</small></div>${right}</div>`;
+const strip=(text,type='')=>`<div class="strip ${type}">${icon('info')}<span>${esc(text)}</span></div>`;
+const title=(label,sub,action='')=>`<div class="heading"><div><div class="eyebrow">ROBOTDOCK / ${route.toUpperCase()}</div><h1>${label}</h1><p>${sub}</p></div>${action}</div>`;
+function allowed(){return ['overview','network','devices','sdk','logs','license',...(license.tier==='develop'?['develop']:[]),...(license.tier==='apply'?['apps']:[])];}
+const labels={overview:'设备概览',network:'网络连接',devices:'外设管理',sdk:'SDK 与接入',logs:'诊断与日志',license:'授权与版本',develop:'开发环境',apps:'应用工作台'};
+const art=`<div class="device-art"><svg viewBox="0 0 240 250" role="img" aria-label="RobotDock 背包结构示意，非真实产品尺寸"><defs><linearGradient id="metal" x2="1" y2="1"><stop stop-color="#626873"/><stop offset=".35" stop-color="#292d34"/><stop offset="1" stop-color="#101216"/></linearGradient></defs><path d="M67 38 144 23l55 28v155l-76 24-56-32z" fill="url(#metal)" stroke="#8e949f"/><path d="m67 38 55 31 77-18 M122 69v161" fill="none" stroke="#858b96"/><path d="M78 57v127l31 18V75z" fill="#14171c" stroke="#555c68"/><path d="m139 77 44-13v114l-44 14z" fill="#111318" stroke="#565d69"/><g stroke="#646b77" stroke-width="2"><path d="m145 86 31-9m-31 18 31-9m-31 18 31-9m-31 18 31-9m-31 18 31-9m-31 18 31-9m-31 18 31-9m-31 18 31-9"/></g><path d="m139 200 14-4v9l-14 5z m21-6 13-4v9l-13 4z" fill="#9299a7"/><circle cx="88" cy="94" r="4" fill="#d9dce3"/><text x="80" y="144" fill="#b9bec8" font-size="10" transform="rotate(28 80 144)">ONE-G</text><path d="M55 205H23v-30 M194 30h22v30" stroke="#797f89" fill="none" stroke-dasharray="3 4"/></svg><span>EDGE COMPUTE MODULE · 结构示意</span></div>`;
+function overview(){const basic=license.tier==='basic';return title('你的设备，尽在掌握。','管理连接、检查能力，从这里开始。',button('检查设备状态','diagnose',true))+`<div class="grid"><section class="panel hero"><div class="hero-copy"><div class="eyebrow">ONE-G ROBOTICS / EDGE PLATFORM</div>${badge('演示设备 · 管理服务就绪')}<h2>RobotDock</h2><div class="serial mono">${DEVICE}</div><div class="bottom">统一设备管理底座<br>硬件、授权、运行条件，分别核验。</div></div>${art}</section><section class="panel license-summary"><div><div class="eyebrow">DELIVERY & ENTITLEMENT</div>${badge('离线授权 · 演示')}<h2>${names[license.tier]}</h2><p>${basic?'提供基础 SDK 与接入能力。算法由外部工作站自行开发运行。':license.tier==='develop'?'板载开发环境开放。客户自行部署算法，不包含预设应用。':'板载应用按授权开放；运行前仍需核对硬件、安装与设备条件。'}</p></div>${button('查看授权与能力 →','license')}</section></div><div class="metrics"><div class="metric"><span>计算位置</span><strong>${basic?'外部工作站':'板载计算'}</strong><small>${basic?'SDK 接入 · 自主开发':hardware?'Orin NX 16GB · 示例配置':'算力条件待满足'}</small></div><div class="metric"><span>核心温度 · 模拟</span><strong>42<span> °C</span></strong><small>快照数据，非实时监测</small><div class="meter" style="--value:42%"><i></i></div></div><div class="metric"><span>存储使用 · 模拟</span><strong>128<span> / 512 GB</span></strong><small>示例容量，不代表交付规格</small><div class="meter" style="--value:25%"><i></i></div></div><div class="metric"><span>当前控制会话</span><strong>${session?'模拟占用':'未启动'}</strong><small>${session?'授权变更暂时锁定':'本 Demo 不执行机器人控制'}</small></div></div><div class="grid equal"><section class="panel"><div class="section-head"><h2>连接一览</h2>${badge('模拟快照')}</div>${row('机器人接口','G1 · 有线网络',badge('链路已识别','ok'))}${row('相机接口','USB 3 · RGB-D 示例',badge(camera?'设备已识别':'未连接',camera?'ok':'warn'))}${row('SDK 服务',ip+' · 示例地址',badge('接口就绪','ok'))}</section><section class="panel"><div class="section-head"><h2>下一步</h2><span class="mono muted">01 / CONNECT</span></div><h3>${basic?'从 SDK 开始接入':license.tier==='develop'?'准备你的板载开发环境':'查看已交付的应用'}</h3><p class="muted small" style="margin:12px 0 20px">${basic?'获取设备地址和接口约定，再从外部工作站发起调用。这里不提供遥操控制入口。':'授权不等于运行就绪。请先核对算力环境与设备状态。'}</p>${button(basic?'打开 SDK 接入指南 →':license.tier==='develop'?'查看开发环境 →':'打开应用工作台 →',basic?'sdk':license.tier==='develop'?'develop':'apps')}</section></div>`;}
+function licensePage(){return title('授权与版本','同一套软件，按交付能力开放。硬件故障不会改变授权档位。')+`<div class="grid"><section class="panel"><div class="section-head"><h2>当前交付能力</h2>${badge(names[license.tier])}</div><dl class="summary-list"><dt>绑定设备</dt><dd class="mono">${DEVICE}</dd><dt>授权编号</dt><dd class="mono">${esc(license.license_id)}</dd><dt>有效期</dt><dd>${license.expires_at?esc(license.expires_at):'永久 · 演示授权'}</dd><dt>校验方式</dt><dd>仅结构、设备绑定与演示标记检查</dd></dl><div class="section">${row('设备管理 + 基础 SDK','三个版本均标配',badge('已开放','ok'))}${row('板载开发能力','需要匹配的板载硬件',badge(license.features.includes('onboard')?'已授权':'未交付',license.features.includes('onboard')?'ok':''))}${row('应用包',license.features.filter(f=>appDefs[f]).map(f=>appDefs[f].name).join('、')||'当前不包含预设应用',badge(license.tier==='apply'?'按清单开放':'自主开发'))}</div>${strip('此 HTML 不验证真实数字签名，不能作为生产授权系统。真实授权和运行权限必须由背包服务核验。')}</section><section class="panel"><h2>导入离线授权</h2><div class="steps"><div class="step-card current"><span class="number">01</span><b>选择文件</b><p>JSON 示例文件</p></div><div class="step-card"><span class="number">02</span><b>核对能力</b><p>预览，不立即生效</p></div><div class="step-card"><span class="number">03</span><b>确认应用</b><p>更新本地 Demo</p></div></div><div class="filebox">${icon('license')}<h3>选择授权文件</h3><p>仅支持本 Demo JSON，最大 64 KB</p><input type="file" id="license-file" accept=".json,application/json" aria-label="选择授权 JSON 文件" ${session?'disabled':''}><p>不会上传文件，不会连接服务器。</p></div><div id="import-error" class="error" role="alert"></div>${session?strip('模拟会话占用中。请在「演示场景」结束占用后再导入。','warn'):''}</section></div><section class="panel section"><div class="section-head"><h2>试用三档授权</h2><span class="small muted">仅供原型体验 · 不是真实授权文件</span></div><div class="samples">${Object.entries(names).map(([k,n],i)=>`<article class="sample"><div class="code">0${i+1} / ${['CONNECT','DEVELOP','APPLY'][i]}</div><h3>${n}</h3><p>${['基础 SDK、设备管理；不包含遥操应用。','增加板载开发能力，算法由客户部署。','示例含五点遥操与演示表演授权。'][i]}</p><div class="actions">${button('下载示例 JSON','download-'+k)}${button('预览此示例','sample-'+k,false,session)}</div></article>`).join('')}</div></section>`;}
+function ready(id){if(!license.features.includes(id))return '未授权';if(!hardware)return '板载算力条件不足';if(!appDefs[id].installed)return '应用包未安装';if(id==='teleop'&&!camera)return '示例数采配置要求的相机未连接';if(session)return '模拟会话占用中';return '';}
+function appsPage(){return title('应用工作台','只展示应用能力，不将授权状态当作运行许可。')+strip('所有入口仅演示页面流程。未接入 PICO、机器人或真实算法。')+`<div class="app-grid section">${Object.entries(appDefs).map(([id,a],i)=>{const owned=license.features.includes(id),reason=ready(id);return `<article class="panel app-card"><div class="section-head"><span class="app-number">APP / 0${i+1}</span>${badge(owned?'已授权':'未授权',owned?'ok':'')}</div><h2>${a.name}</h2><p>${a.desc}</p><div class="app-meta">${badge(a.installed?'示例包已安装':'未安装')}${badge(reason||'演示条件满足',reason?'warn':'ok')}</div>${button(reason||'查看引导 Demo →','launch-'+id,!reason,!!reason)}<div class="notice">${owned&&!a.installed?'授权保留，仍需部署应用包。':!owned?'此应用不在当前交付清单内。':'运行条件仅用于展示，不是硬件验收结果。'}</div></article>`;}).join('')}</div>`;}
+function network(){return title('网络连接','地址用于演示 SDK 接入；修改不会影响真实网卡。')+`<div class="grid equal"><section class="panel"><h2>设备管理网口</h2>${row('ETH 0','管理与 SDK 接入',badge('模拟已连接','ok'))}<form id="network-form"><label class="field">IPv4 地址<input name="ip" value="${esc(ip)}" autocomplete="off" required aria-describedby="ip-help"></label><p id="ip-help" class="small muted">示例默认：192.168.50.10。只更新本地 Demo。</p><div id="ip-error" class="error" role="alert"></div><div class="section"><button class="primary" type="submit">保存模拟地址</button></div></form></section><section class="panel"><h2>连接分工</h2>${row('ETH 1 · 机器人网络','192.168.123.x · 示例专用链路',badge('只读展示'))}${row('Wi-Fi · 管理入口','RobotDock-Lab · 示例网络',badge('只读展示'))}${row('外部工作站',license.tier==='basic'?'客户通过 SDK 开发算法':'当前交付支持板载计算',badge('不代替控制链路'))}${strip('正式产品修改网络前需提示断连风险，并提供超时回退；本 Demo 不修改网络。')}</section></div>`;}
+function devices(){return title('外设管理','已识别 ≠ 接口可用 ≠ 应用已适配。')+`<section class="panel">${row('G1 机器人接口','设备识别：已识别 · 接口状态：模拟就绪 · 应用兼容性：待样机验证',badge('模拟'))}${row('RGB-D 相机 · 示例',camera?'设备识别：已识别 · 驱动：示例就绪 · 应用适配：待验证':'设备识别：未连接 · 驱动与应用状态不可确认',badge(camera?'已识别':'未连接',camera?'ok':'warn'))}${row('左 / 右末端','未选配主动夹爪或灵巧手；不提供开合操作',badge('未配置'))}${row('存储介质','SSD 512 GB · 容量和使用量均为示例',badge('模拟可用','ok'))}</section>${strip('通过右上角「演示场景」可模拟相机断开；应用授权不会随外设状态改变。')}`;}
+function sdk(){return title('SDK 与接入','基础接口三个版本均提供，算法与应用由各档交付范围决定。',button('下载接口说明','sdk-doc',true))+`<div class="grid equal"><section class="panel"><h2>接入信息</h2><div class="section"><dl class="summary-list"><dt>设备编号</dt><dd class="mono">${DEVICE}</dd><dt>管理地址</dt><dd class="mono">${esc(ip)}</dd><dt>接口版本</dt><dd>v1 · 拟议接口，尚未实现</dd><dt>验证方式</dt><dd>设备令牌 · 正式方案待确定</dd></dl></div>${strip('下面是接口约定示意，不能直接调用真实机器人。网页未发起任何网络请求。')}</section><section class="panel"><h2>最小调用示例</h2><pre># 示例约定 · 非已发布 SDK\nGET /api/v1/device\nGET /api/v1/peripherals\nGET /api/v1/health\n\n# 示例响应\n{\n  "device_id": "${DEVICE}",\n  "source": "demo",\n  "control_enabled": false\n}</pre></section></div><section class="panel section"><h2>基础接口边界</h2>${row('状态读取','设备信息、网络状态、外设枚举与诊断',badge('基础能力'))}${row('控制接口','具体范围、权限及保护机制另行定义',badge('待定义'))}${row('不包含的能力','重定向、策略模型、五点校准、一键接管',badge('非基础 SDK 应用'))}</section>`;}
+function develop(){return title('开发环境','板载平台由客户自主开发；不预装遥操应用。')+`<section class="panel"><div class="section-head"><h2>板载开发能力</h2>${badge(hardware?'示例环境就绪':'硬件条件不足',hardware?'ok':'warn')}</div>${row('计算平台',hardware?'Orin NX 16GB · 示例':'当前模拟硬件不满足板载配置',badge('授权仍有效','ok'))}${row('开发环境','驱动、基础 SDK、开发文档与示例',badge('交付范围'))}${row('客户程序','尚未部署；此原型不提供 Shell 或任意代码执行',badge('等待开发'))}${button('查看 SDK 文档 →','sdk')}</section>`;}
+function logsPage(){return title('诊断与日志','仅记录当前 Demo 操作，不读取设备日志。',button('运行模拟检查','diagnose',true))+`<section class="panel"><div class="section-head"><h2>会话事件</h2>${button('导出诊断 JSON','export-logs')}</div>${logs.slice().reverse().map(l=>`<div class="log"><time>${esc(l.time)}</time><span class="mono">${esc(l.kind)}</span><span>${esc(l.text)}</span></div>`).join('')}</section>`;}
+function render(focus=false){if(!allowed().includes(route))route='overview';document.getElementById('nav').innerHTML=allowed().map(k=>`<a href="#${k}" ${route===k?'aria-current="page"':''}>${icon(k)}${labels[k]}</a>`).join('');document.getElementById('crumb').textContent=labels[route];document.getElementById('main').innerHTML=({overview,license:licensePage,network,devices,sdk,logs:logsPage,develop,apps:appsPage}[route])()+`<footer class="footnote"><span>ONE-G ROBOTICS / RobotDock · Unified device platform</span><span>交互 Demo · 不访问网络，不发送机器人指令</span></footer>`;if(focus)document.getElementById('main').focus({preventScroll:true});}
+function go(r){if(!allowed().includes(r))r='overview';if(location.hash==='#'+r){route=r;render(true);}else location.hash=r;}
+window.addEventListener('hashchange',()=>{route=location.hash.slice(1);render(true);});
+let toastTimer;function toast(t){document.getElementById('toast').textContent=t;clearTimeout(toastTimer);toastTimer=setTimeout(()=>document.getElementById('toast').textContent='',4000);}
+function log(kind,text){logs.push({time:new Date().toLocaleTimeString('zh-CN',{hour12:false}),kind,text});if(logs.length>100)logs.shift();}
+function download(name,data,type='application/json'){const url=URL.createObjectURL(new Blob([typeof data==='string'?data:JSON.stringify(data,null,2)],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('已生成演示文件：'+name);}
+const modal=document.getElementById('modal');let restoreFocus;
+function open(title,body){restoreFocus=document.activeElement;document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=body;modal.showModal();}
+function close(){modal.close();pending=null;restoreFocus?.isConnected&&restoreFocus.focus();}
+document.getElementById('close-modal').onclick=close;modal.addEventListener('cancel',e=>{e.preventDefault();close();});
+function preview(x,name){if(session)throw Error('模拟会话占用中，不能变更授权。');pending=validate(x);pendingName=name;open('核对授权变更',`<p class="notice">文件：${esc(name)}。当前配置尚未改变。</p><dl class="summary-list"><dt>绑定设备</dt><dd class="mono">${DEVICE}</dd><dt>当前版本</dt><dd>${names[license.tier]}</dd><dt>变更为</dt><dd><strong>${names[pending.tier]}</strong></dd><dt>应用清单</dt><dd>${pending.features.filter(f=>appDefs[f]).map(f=>appDefs[f].name).join('、')||'无预设应用'}</dd><dt>校验结果</dt><dd>结构、设备绑定、演示标记符合</dd></dl>${strip('这不是密码学签名验证。只更新本浏览器中的 Demo，不升级硬件、不安装应用。','warn')}<label class="check-row"><input type="checkbox" id="confirm-license"><span>我已核对设备与能力，确认应用这份演示授权。</span></label><div class="actions">${button('确认应用','apply-license',true,true)}${button('取消','cancel')}</div>`);}
+document.addEventListener('change',async e=>{if(e.target.id==='confirm-license')document.querySelector('[data-action="apply-license"]').disabled=!e.target.checked||session;if(e.target.id==='license-file'){const file=e.target.files[0],seq=++readSeq;if(!file)return;const error=document.getElementById('import-error');error.textContent='';e.target.disabled=true;try{if(file.size>65536)throw Error('文件超过 64 KB，请选择 Demo 授权 JSON。');const x=JSON.parse(await file.text());if(seq!==readSeq||route!=='settings/license')return;preview(x,file.name);}catch(err){error.textContent=err instanceof SyntaxError?'文件不是有效 JSON。当前授权未改变。':err.message;log('REJECT',error.textContent);}finally{e.target.disabled=session;e.target.value='';}}});
+function validIP(v){if(typeof v!=='string')return false;const p=v.split('.');return p.length===4&&p.every(x=>/^\d{1,3}$/.test(x)&&+x<=255)&&+p[0]>0&&+p[0]<224&&+p[0]!==127&&+p[3]>0&&+p[3]<255;}
+document.addEventListener('submit',e=>{if(e.target.id==='network-form'){e.preventDefault();const value=e.target.elements.ip.value.trim();if(!validIP(value)){document.getElementById('ip-error').textContent='请输入有效的单播 IPv4 主机地址，例如 192.168.50.10。';e.target.elements.ip.focus();return;}ip=value;persist();log('NETWORK','模拟管理地址更新为 '+ip+'；真实网络未改变。');render();toast('模拟地址已保存，未修改真实网络。');}});
+document.getElementById('scenario').onclick=()=>open('演示场景',`<p class="notice">这些开关只模拟运行条件，不改变授权档位。所有设备数据均为演示值。</p><label class="toggle-row"><span>板载算力满足示例要求<br><small class="muted">关掉后，应用版保留授权但无法进入应用</small></span><input id="hw-toggle" type="checkbox" ${hardware?'checked':''}></label><label class="toggle-row"><span>示例相机已连接<br><small class="muted">用于五点遥操＋数采组合的示例依赖</small></span><input id="camera-toggle" type="checkbox" ${camera?'checked':''}></label><label class="toggle-row"><span>模拟会话占用<br><small class="muted">开启后拦截授权变更；并非真实控制会话</small></span><input id="session-toggle" type="checkbox" ${session?'checked':''}></label><div class="actions section">${button('应用演示条件','save-scenario',true)}${button('关闭','cancel')}</div>`);
+document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b||b.disabled)return;const a=b.dataset.action;if(allowed().includes(a)){go(a);return;}if(a.startsWith('download-'))return download('RobotDock-'+a.slice(9)+'-demo.json',example(a.slice(9)));if(a.startsWith('sample-')){try{preview(example(a.slice(7)),'内置演示示例 · '+names[a.slice(7)]);}catch(err){toast(err.message);}return;}if(a==='cancel')return close();if(a==='apply-license'){if(session||!pending||!document.getElementById('confirm-license')?.checked)return;try{license=validate(pending);persist();log('LICENSE','应用演示授权：'+names[license.tier]+'；未校验真实签名。');close();render();toast('演示授权已应用，能力与导航已更新。');}catch(err){toast(err.message);}return;}if(a==='save-scenario'){hardware=document.getElementById('hw-toggle').checked;camera=document.getElementById('camera-toggle').checked;session=document.getElementById('session-toggle').checked;persist();log('SCENARIO','模拟条件更新，授权档位保持 '+names[license.tier]);close();render();toast('演示条件已更新，未操作真实设备。');return;}if(a==='diagnose'){const checks=['公共管理服务：模拟正常','SDK 接口：模拟就绪','当前交付：'+names[license.tier],license.tier==='basic'?'外部计算：由客户工作站承担':hardware?'板载条件：示例满足':'板载条件：不足，相应应用保持拦截',camera?'相机：模拟已连接':'相机：模拟未连接'];checks.forEach(x=>log('CHECK',x));open('模拟检查完成',checks.map(x=>row(x,'',badge('演示'))).join('')+strip('以上来自演示场景，不是实际设备检查。')+`<div class="actions section">${button('查看诊断日志','open-logs',true)}${button('关闭','cancel')}</div>`);return;}if(a==='open-logs'){close();go('diagnostics/logs');return;}if(a==='export-logs')return download('RobotDock-demo-diagnostics.json',{demo:true,device:DEVICE,tier:license.tier,hardware,camera,events:logs});if(a==='sdk-doc')return download('RobotDock-SDK-接口示意.txt','RobotDock SDK 接口示意（尚未实现）\n设备：'+DEVICE+'\n模拟地址：'+ip+'\nGET /api/v1/device\nGET /api/v1/peripherals\nGET /api/v1/health\n控制接口范围、安全机制与鉴权另行定义。\n此文档不包含可调用的真实接口。','text/plain');if(a.startsWith('launch-')){const id=a.slice(7);if(!appDefs[id]||ready(id))return toast('当前运行条件不满足。');open('五点遥操 · 流程预览',`<p class="notice">仅展示应用操作顺序，不运行校验、仿真或真机。</p>${['环境检查','连接 PICO','人体输入校准','G1 状态检查','隔离闭环验证','现场确认与接管'].map((s,i)=>row('0'+(i+1)+' · '+s,'需由真实边缘端核验，Demo 不产生凭证',badge('未执行'))).join('')}${strip('当前原型到此为止。不提供任何真实启动或接管按钮。')}`);}});
+
+
+
+/* v2 task-oriented information architecture. The proven local-only license,
+   download, dialog and scenario mechanics above are intentionally reused. */
+const productApps={
+  teleop:{name:'五点遥操',desc:'连接 PICO，完成校准与闭环验证，进入遥操与数采。',installed:true,planned:false,icon:'M6 8h12l3 9a2 2 0 0 1-3 2l-3-3H9l-3 3a2 2 0 0 1-3-2z M7 10v4 M5 12h4 M16 11h.01 M18 13h.01'},
+  gem:{name:'GEM 视频控制',desc:'GEM 视频控制功能将在后续版本提供。',installed:false,planned:true,icon:'M3 5h18v14H3z M10 9l5 3-5 3z M8 22h8 M12 19v3'},
+  show:{name:'演示表演',desc:'使用已适配的动作与预设演示流程。',installed:false,planned:false,icon:'M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.4l6.1-.9z'},
+  three:{name:'三点遥操',desc:'三点遥操功能将在后续版本提供。',installed:false,planned:true,icon:'M12 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4 M12 7v7 M5 10l7 2 7-2 M8 21l4-7 4 7'}
+};
+const programRoutes=Object.keys(productApps).map(id=>'apps/'+id);
+const programIcon=id=>'<span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="'+productApps[id].icon+'"/></svg></span>';
+const commonRoutes=['overview','devices/network','devices/robot','devices/peripherals','diagnostics/checks','diagnostics/logs','api/connection','api/docs','settings/license','settings/system','settings/storage'];
+const navDefs=[
+  {group:'overview',href:'overview',label:'设备概览',icon:'overview'},
+  {group:'devices',href:'devices/network',label:'设备与连接',icon:'devices'},
+  {group:'diagnostics',href:'diagnostics/checks',label:'检测与诊断',icon:'logs'},
+  {group:'api',href:'api/connection',label:'API与文档',icon:'sdk'},
+  {group:'settings',href:'settings/license',label:'系统设置',icon:'license'}
+];
+const routeLabels={overview:'设备概览','devices/network':'设备与连接 / 网络','devices/robot':'设备与连接 / 机器人','devices/peripherals':'设备与连接 / 外设','diagnostics/checks':'检测与诊断 / 快速检查','diagnostics/logs':'检测与诊断 / 日志','api/connection':'API与文档 / 接入信息','api/docs':'API与文档 / 文档与示例','settings/license':'系统设置 / 授权','settings/system':'系统设置 / 系统版本','settings/storage':'系统设置 / 存储',...Object.fromEntries(Object.entries(productApps).map(([id,app])=>['apps/'+id,app.name]))};
+const groupOf=r=>r.split('/')[0];
+const licenseExpired=()=>license.expires_at!==null&&Date.parse(license.expires_at)<=Date.now();
+function allowed(){return [...commonRoutes,...(license.tier==='apply'&&!licenseExpired()?programRoutes:[])];}
+function tabs(items){return `<nav class="subnav" aria-label="页面分区">${items.map(([href,label])=>`<a href="#${href}" ${route===href?'aria-current="page"':''}>${esc(label)}</a>`).join('')}</nav>`;}
+const deviceTabs=()=>tabs([['devices/network','网络'],['devices/robot','机器人接口'],['devices/peripherals','外设']]);
+const diagnosticTabs=()=>tabs([['diagnostics/checks','快速检查'],['diagnostics/logs','诊断日志']]);
+const apiTabs=()=>tabs([['api/connection','接入信息'],['api/docs','文档与示例']]);
+const settingTabs=()=>tabs([['settings/license','授权与能力'],['settings/system','系统与版本'],['settings/storage','存储']]);
+
+function overview(){
+  const basic=license.tier==='basic',develop=license.tier==='develop',expired=licenseExpired();
+  const next=expired?['查看授权状态','settings/license']:basic||develop?['查看 API 接入信息','api/connection']:['打开五点遥操','apps/teleop'];
+  const nextTitle=expired?'授权已过期':basic?'从工作站开始接入':develop?'连接你的开发环境':'开始一次五点遥操';
+  const nextCopy=expired?'更新授权后继续使用内置程序，公共管理功能仍然可用。':basic?'获取设备地址与 SDK 接口，在外部工作站运行你的程序。':develop?'确认板载接口，通过 API / SDK 使用设备的计算能力。':'连接 PICO，完成校准与验证，再按引导进入遥操。';
+  return title('设备概览','设备、连接与应用，在这里开始。',button('运行快速检查','diagnose'))+`
+  <div class="overview-primary">
+    <section class="panel hero device-identity">
+      <div class="hero-copy"><div class="eyebrow">ONE-G / EDGE COMPUTING</div><div class="device-state"><i aria-hidden="true"></i>管理服务就绪<span>模拟</span></div><h2>RobotDock<span>统一边缘设备</span></h2><div class="serial mono">${DEVICE}</div><div class="hero-spec"><span>计算位置</span><strong>${basic?'外部工作站':'板载计算'}</strong><small>${basic?'通过 SDK / API 接入':hardware?'Orin NX 16GB · 示例配置':'板载硬件条件待满足'}</small></div></div>
+      ${art}<div class="device-nameplate"><span>DEVICE CONSOLE</span><span>硬件结构示意 / 非实机状态</span></div>
+    </section>
+    <section class="panel next-panel"><div class="section-head"><span class="eyebrow">下一步</span><span class="next-arrow" aria-hidden="true">↗</span></div><h2>${nextTitle}</h2><p>${nextCopy}</p><div class="next-action">${button(next[0]+' <span aria-hidden="true">→</span>',next[1],true)}</div><div class="delivery-line"><div><span>当前版本</span><strong>${names[license.tier]}</strong></div><a href="#settings/license" aria-label="查看授权与能力">授权详情 <span aria-hidden="true">↗</span></a></div></section>
+  </div>
+  <div class="metrics overview-metrics"><div class="metric"><span>公共服务</span><strong>5<span> / 5</span><i class="metric-dot" aria-hidden="true"></i></strong><small>全部就绪 · 模拟快照</small></div><div class="metric"><span>存储使用</span><strong>128<span> / 512 GB</span></strong><div class="meter" style="--value:25%"><i></i></div><small>已用 25% · 示例容量</small></div><div class="metric"><span>控制会话</span><strong class="metric-text">${session?'模拟占用':'未启动'}</strong><small>${session?'授权变更暂时锁定':'当前未接管机器人'}</small></div><div class="metric"><span>管理地址</span><strong class="metric-address">${esc(ip)}</strong><small>API / SDK · 示例地址</small></div></div>
+  <div class="overview-secondary"><section class="panel connection-panel"><div class="section-head"><h2>设备连接</h2><a class="text-link" href="#devices/network">管理连接 <span aria-hidden="true">↗</span></a></div><div class="connection-list">${row('G1 机器人','ETH 1 · 机器人专用链路',badge('模拟已识别','ok'))}${row('PICO / XR','头显、手柄与追踪器',badge('未连接'))}${row('SDK 服务',ip+' · 管理网络',badge('模拟就绪','ok'))}</div></section><section class="panel quick-panel"><div class="section-head"><h2>常用工具</h2><span class="quiet-label">全版本标配</span></div><a class="tool-link" href="#api/docs">${icon('sdk')}<span><strong>API 文档与示例</strong><small>查看接口，开始二次开发</small></span><span class="link-arrow" aria-hidden="true">↗</span></a><a class="tool-link" href="#diagnostics/logs">${icon('logs')}<span><strong>诊断与日志</strong><small>定位问题，导出诊断记录</small></span><span class="link-arrow" aria-hidden="true">↗</span></a></section></div>`;
+}
+
+function networkPanel(){return `<div class="grid equal"><section class="panel"><div class="section-head"><h2>设备管理网口</h2>${badge('模拟已连接','ok')}</div><form id="network-form"><label class="field">IPv4 地址<input name="ip" value="${esc(ip)}" autocomplete="off" required aria-describedby="ip-help"></label><p id="ip-help" class="small muted">用于本 Demo 的 API 地址展示；不会修改真实网卡。</p><div id="ip-error" class="error" role="alert"></div><div class="section"><button class="primary" type="submit">保存模拟地址</button></div></form></section><section class="panel"><h2>链路职责</h2>${row('ETH 0 · 管理网络','Web 管理与 SDK / API 接入',badge('可配置示意'))}${row('ETH 1 · 机器人网络','G1 专用网段，与管理网隔离',badge('只读示意'))}${row('Wi-Fi · 辅助接入','调试或 PICO 无线链路，非必选',badge('未连接'))}${strip('正式产品更改地址前应检查冲突、提示断连并提供超时回退。此 Demo 只保存本地显示值。')}</section></div>`;}
+function devicesPage(){
+  if(route==='devices/network')return title('设备与连接','这里回答“如何连上设备”；服务地址与接口说明见 API 页面。')+deviceTabs()+networkPanel();
+  if(route==='devices/robot')return title('机器人接口','确认 G1 是否被识别、链路是否可用；不在这里校准或接管。')+deviceTabs()+`<div class="grid equal"><section class="panel service-table"><div class="section-head"><h2>G1 接口状态</h2>${badge('模拟已识别','ok')}</div>${row('物理链路','ETH 1 · 千兆有线 · 示例',badge('LINK UP','ok'))}${row('机器人网段','192.168.123.x · 独立链路',badge('只读'))}${row('通信中间件','DDS / Domain 0 · 拟议配置',badge('待样机验证'))}${row('控制状态','未接管、未发送 LowCmd',badge('安全空闲','ok'))}</section><section class="panel boundary"><h3>本页的边界</h3><p>这里只管理机器人接口与连接诊断。姿态映射、PICO 校准、闭环验证和真机接管属于“五点遥操与数采”应用。</p>${strip('识别成功不代表控制权限成立；正式系统仍需边缘端安全状态机放行。')}</section></div>`;
+  return title('外设','分别显示“发现、驱动、应用适配”，避免把插上设备误认为功能可用。')+deviceTabs()+`<section class="panel service-table">${row('RGB-D 相机',camera?'USB 3 设备已发现 · 驱动示例就绪 · 应用适配待验证':'设备未发现 · 驱动和应用状态无法确认',badge(camera?'已发现':'未连接',camera?'ok':'warn'))}${row('PICO 头显与追踪器','USB / Wi-Fi 连接方式由应用选择；当前未连接',badge('未连接'))}${row('左 / 右末端','固定轻量橡胶手 · 示例配置',badge('无主动驱动'))}${row('急停与安全输入','接口定义待正式硬件方案确认',badge('待定义','warn'))}</section>${strip('PICO 四段校准、Shadow 验证等步骤不放在通用设备页，避免其他版本误看到遥操流程。')}`;
+}
+
+function diagnosticsPage(){
+  if(route==='diagnostics/checks')return title('快速检查','检查公共服务和连接条件；应用专属校验留在对应应用内。',button('运行模拟检查','diagnose',true))+diagnosticTabs()+`<div class="mini-grid"><article class="mini-card"><div class="code">CORE / 01</div><h3>系统服务</h3><p>管理服务、API 服务、时间与存储。</p>${badge('模拟正常','ok')}</article><article class="mini-card"><div class="code">LINK / 02</div><h3>设备链路</h3><p>管理网、机器人网和外设枚举。</p>${badge(camera?'4 项可用':'相机待处理',camera?'ok':'warn')}</article><article class="mini-card"><div class="code">SCOPE / 03</div><h3>交付范围</h3><p>核对授权、安装版本与当前环境。</p>${badge(names[license.tier])}</article></div><section class="panel section"><h2>检查边界</h2>${row('公共检查','系统服务、网口、机器人接口、外设、API',badge('三个版本均有'))}${row('应用检查','PICO 校准、动作测试、闭环与接管前置条件',badge('进入应用后执行'))}${row('真实安全凭证','必须由边缘端生成，Web 页面不能自行判定',badge('生产要求','warn'))}</section>`;
+  return title('诊断日志','查看历史事件、筛选故障线索，并导出给技术支持。',button('导出诊断 JSON','export-logs'))+diagnosticTabs()+`<section class="panel"><div class="section-head"><h2>会话事件</h2>${badge('仅 Demo 操作记录')}</div>${logs.slice().reverse().map(l=>`<div class="log"><time>${esc(l.time)}</time><span class="mono">${esc(l.kind)}</span><span>${esc(l.text)}</span></div>`).join('')}</section>${strip('应用错误会先在应用原位说明原因；这里用于查看更完整的历史和导出信息。')}`;
+}
+
+function apiPage(){
+  const onboard=license.features.includes('onboard');
+  if(route==='api/connection')return title('API 接入信息','三个版本都提供基础接口；计算位置由授权与硬件共同决定。')+apiTabs()+`<div class="grid equal"><section class="panel"><div class="section-head"><h2>连接参数</h2>${badge('示例接口','ok')}</div><dl class="summary-list"><dt>设备编号</dt><dd class="mono">${DEVICE}</dd><dt>管理地址</dt><dd class="mono">${esc(ip)}</dd><dt>Base URL</dt><dd class="mono">http://${esc(ip)}/api/v1</dd><dt>接口版本</dt><dd>v1 · 拟议接口</dd><dt>鉴权</dt><dd>设备令牌 · 正式方案待确定</dd></dl>${strip('本页面未发起网络请求，地址和令牌均为界面方案示意。')}</section><section class="panel"><div class="section-head"><h2>计算模式</h2>${badge(onboard?(hardware?'板载模拟就绪':'板载硬件待处理'):'外部工作站',onboard&&hardware?'ok':onboard?'warn':'')}</div>${row('程序运行位置',onboard?'RobotDock 板载计算模块':'用户外部工作站',badge(onboard?'板载':'外部'))}${row('Web 的职责','查看基础信息、接口约定与服务状态',badge('管理面'))}${row('二次开发方式','客户程序通过 API / SDK 调用',badge('标准接口','ok'))}${onboard&&!hardware?strip('授权包含板载能力，但当前模拟硬件条件不足。授权本身没有变化。','warn'):''}</section></div><section class="panel section boundary"><h3>不是 Web 开发平台</h3><p>开发版不要求用户在浏览器里管理自己的程序。RobotDock Web 负责设备信息、连接、诊断和 API 说明；二次开发者在自己的工具链中调用 API。</p></section>`;
+  return title('API 文档与示例','查接口、下载说明，从自己的开发环境发起调用。',button('下载接口说明','sdk-doc',true))+apiTabs()+`<div class="grid equal"><section class="panel"><h2>接口目录</h2>${row('设备信息','读取型号、序列号、版本与授权摘要',badge('GET'))}${row('连接与外设','读取网口、G1 接口和外设枚举',badge('GET'))}${row('健康与诊断','读取公共检查结果和诊断摘要',badge('GET'))}${row('应用目录','应用版读取内置应用及其运行条件',badge('GET'))}</section><section class="panel"><h2>最小调用示例</h2><pre># 拟议接口 · 尚未实现&#10;GET /api/v1/device&#10;GET /api/v1/peripherals&#10;GET /api/v1/health&#10;&#10;{&#10;  "device_id": "${DEVICE}",&#10;  "source": "demo",&#10;  "control_enabled": false&#10;}</pre></section></div><section class="panel section"><h2>接口边界</h2>${row('基础读取','设备信息、网络、外设枚举、健康与诊断',badge('全版本'))}${row('控制与任务接口','权限、状态机和安全保护仍需按应用定义',badge('待定义','warn'))}${row('不属于基础 SDK','PICO 校准、重定向、Shadow 验证与一键接管',badge('应用能力'))}</section>`;
+}
+
+function licensePage(){
+  return title('授权与能力','授权决定“交付了什么”，不代替软件安装或运行条件。')+settingTabs()+`<div class="grid"><section class="panel"><div class="section-head"><h2>当前交付能力</h2>${badge(names[license.tier],'ok')}</div><dl class="summary-list"><dt>绑定设备</dt><dd class="mono">${DEVICE}</dd><dt>授权编号</dt><dd class="mono">${esc(license.license_id)}</dd><dt>有效期</dt><dd>${license.expires_at?esc(license.expires_at):'永久 · 演示授权'}</dd><dt>校验方式</dt><dd>结构、设备绑定与固定演示标记</dd></dl><div class="section">${row('设备管理 + 基础 API','三个版本均标配',badge('已开放','ok'))}${row('板载计算能力','由开发版或应用版授权',badge(license.features.includes('onboard')?'已授权':'未交付',license.features.includes('onboard')?'ok':''))}${row('内置应用',license.features.filter(f=>productApps[f]).map(f=>productApps[f].name).join('、')||'当前不包含',badge(license.tier==='apply'?'按清单开放':'不包含'))}</div>${strip('此 HTML 不能验证真实数字签名。生产授权、设备身份与运行权限必须由边缘端服务核验。')}</section><section class="panel"><h2>导入离线授权</h2><div class="steps"><div class="step-card current"><span class="number">01</span><b>选择文件</b><p>读取本地 JSON</p></div><div class="step-card"><span class="number">02</span><b>核对能力</b><p>预览，不立即生效</p></div><div class="step-card"><span class="number">03</span><b>确认应用</b><p>更新本地 Demo</p></div></div><div class="filebox">${icon('license')}<h3>选择授权文件</h3><p>仅支持本 Demo JSON，最大 64 KB</p><input type="file" id="license-file" accept=".json,application/json" aria-label="选择授权 JSON 文件" ${session?'disabled':''}><p>文件不会上传，也不会连接服务器。</p></div><div id="import-error" class="error" role="alert"></div>${session?strip('模拟会话占用中。结束占用后才能变更授权。','warn'):''}</section></div><section class="panel section"><div class="section-head"><h2>试用三档授权</h2><span class="small muted">仅用于查看同一界面如何按授权变化</span></div><div class="samples">${Object.entries(names).map(([k,n],i)=>`<article class="sample"><div class="code">0${i+1} / ${['CONNECT','DEVELOP','APPLY'][i]}</div><h3>${n}</h3><p>${['外部工作站 + 基础 API / SDK，不包含内置应用。','增加板载计算，客户仍通过 API / SDK 二次开发。','在公共能力上增加按授权交付的内置应用。'][i]}</p><div class="actions">${button('下载示例 JSON','download-'+k)}${button('预览此示例','sample-'+k,false,session)}</div></article>`).join('')}</div></section>`;
+}
+
+function settingsPage(){
+  const appTier=license.tier==='apply';
+  if(route==='settings/license')return licensePage();
+  if(route==='settings/system')return title('系统与版本','分别显示安装版本、授权能力和环境状态，避免混为一谈。')+settingTabs()+`<div class="grid equal"><section class="panel"><div class="eyebrow">INSTALLED SOFTWARE</div><h2>RobotDock System</h2><div class="system-version">0.1.0-demo</div>${row('管理前端','统一 Web Console · 演示构建',badge('已安装','ok'))}${row('公共服务','Device / API / Diagnostics',badge('已安装','ok'))}${row('运行引擎','SONIC Runtime · 仅应用依赖示意',badge(license.tier==='apply'?'随应用核验':'未要求'))}</section><section class="panel"><div class="eyebrow">RUNTIME ENVIRONMENT</div><h2>当前环境</h2>${row('计算平台',license.tier==='basic'?'外部工作站模式':'Orin NX 16GB · 示例',badge(license.tier==='basic'?'外部':hardware?'模拟就绪':'条件不足',hardware?'ok':'warn'))}${row('授权档位',names[license.tier],badge(licenseExpired()?'已过期':'有效',licenseExpired()?'bad':'ok'))}${row('控制会话',session?'模拟占用':'未启动',badge(session?'占用':'空闲',session?'warn':'ok'))}${strip('已授权不等于已安装，已安装也不等于当前可运行。应用启动前仍需独立核验。')}</section></div>`;
+  return title('存储','管理系统空间、日志与业务数据的保留策略。')+settingTabs()+`<div class="grid equal"><section class="panel"><div class="section-head"><h2>系统盘 · 模拟</h2>${badge('正常','ok')}</div><div class="system-version">128 / 512 GB</div><div class="storage-bar"><i></i></div><p class="small muted">已用 25% · 容量仅为产品界面示意</p>${row('系统与运行库','46 GB',badge('受保护'))}${row('诊断日志','2.4 GB',badge('保留 30 天'))}${row(appTier?'应用与采集数据':'客户业务数据','79.6 GB',badge('按项目管理'))}</section><section class="panel"><h2>数据边界</h2>${row('公共诊断日志','在“检测与诊断”中查看和导出',badge('系统数据'))}${appTier?row('遥操采集记录','进入“五点遥操与数采”应用管理',badge('应用数据')):row('客户业务数据','由客户程序通过约定目录或 API 管理',badge('开发数据'))}${row('空间治理','按配额、保留期和项目归属管理',badge('策略待定义'))}${strip('本 Demo 不执行清理、格式化或删除操作。正式产品需提供配额、保留期和删除确认。')}</section></div>`;
+}
+
+function ready(id){
+  if(licenseExpired())return '授权已过期';
+  if(!productApps[id])return '程序不存在';
+  if(productApps[id].planned)return '等待后续开发';
+  if(!license.features.includes(id))return '未授权';
+  if(!hardware)return '板载算力或硬件条件不足';
+  if(!productApps[id].installed)return '应用包未安装';
+  if(id==='teleop'&&!camera)return '相机未连接，数采条件不满足';
+  if(session)return '模拟会话占用中';
+  return '';
+}
+function appsPage(){
+  const id=route.split('/')[1],app=productApps[id],reason=ready(id);
+  const heading=title(app.name,app.desc);
+  if(app.planned){
+    return heading+'<section class="panel program-placeholder"><div class="program-preview"><div class="preview-label">ONE-G / '+(id==='gem'?'GEM':'TELEOP 03')+'</div><div class="module-frame">'+programIcon(id)+'</div><span class="preview-caption">PROGRAM MODULE</span></div><div class="placeholder-copy"><span class="release-label">规划中的程序</span><h2>等待后续开发</h2><p>'+esc(app.desc)+'</p><div class="placeholder-note">此页面为预留入口，当前不提供启动功能。</div></div></section>';
+  }
+  if(id!=='teleop'){
+    return heading+'<section class="panel program-placeholder"><div class="program-preview"><div class="preview-label">ONE-G / PERFORMANCE</div><div class="module-frame">'+programIcon(id)+'</div><span class="preview-caption">PROGRAM MODULE</span></div><div class="placeholder-copy"><span class="release-label">内置程序</span><h2>'+esc(reason||'程序已就绪')+'</h2><p>'+(license.features.includes(id)?'授权已包含此程序，安装后即可使用。':'当前授权尚未包含此程序。')+'</p>'+button(reason||'查看操作流程','launch-'+id,!reason,!!reason)+'</div></section>';
+  }
+  const stages=[
+    ['连接设备','选择 PICO 有线或无线连接'],
+    ['人体校准','按提示完成输入校验'],
+    ['检查机器人','确认 G1 与现场状态'],
+    ['闭环验证','验证输入、模型和动作输出'],
+    ['确认接管','现场确认后进入遥操'],
+    ['结束与保存','停止操作并保存采集记录']
+  ];
+  return heading+'<div class="grid program-layout"><section class="panel program-guide"><div class="program-heading"><div class="program-symbol">'+programIcon(id)+'</div><div><div class="eyebrow">PICO × G1</div><h2>五点遥操与数采</h2></div></div><p class="program-description">按顺序完成准备，再进入遥操。当前可查看完整操作流程。</p><ol class="program-flow">'+stages.map(([name,desc],i)=>'<li><span class="program-step-number">0'+(i+1)+'</span><div><h3>'+name+'</h3><p>'+desc+'</p></div></li>').join('')+'</ol><div class="program-action">'+button(reason||'查看操作流程','launch-teleop',!reason,!!reason)+'<span class="small muted">交互演示 · 未连接设备</span></div></section><aside class="panel program-status"><div class="section-head"><h2>当前状态</h2>'+badge(reason?'待处理':'可预览',reason?'warn':'ok')+'</div>'+row('程序授权',license.features.includes(id)?'已包含五点遥操':'当前授权不包含此程序',badge(license.features.includes(id)?'已授权':'未授权',license.features.includes(id)?'ok':'warn'))+row('板载算力',hardware?'示例配置满足要求':'请确认板载硬件',badge(hardware?'就绪':'不足',hardware?'ok':'warn'))+row('数采相机',camera?'示例相机已连接':'相机未连接，数采条件不满足',badge(camera?'已连接':'未连接',camera?'ok':'warn'))+row('控制会话',session?'当前模拟会话被占用':'当前没有控制会话',badge(session?'占用中':'空闲',session?'warn':'ok'))+'<details class="program-details"><summary>查看运行版本</summary><p>SONIC Runtime · 版本待正式锁定<br>固定橡胶手配置 · 示例包已安装</p></details></aside></div>';
+}
+
+function render(focus=false){
+  if(route==='apps')route='apps/teleop';
+  if(!allowed().includes(route))route='overview';
+  if(location.hash.slice(1)!==route)history.replaceState(null,'','#'+route);
+  const programs=license.tier==='apply'&&!licenseExpired()?'<div class="program-group"><div class="nav-separator"></div><div class="nav-group-label">应用程序</div><div class="program-list">'+Object.entries(productApps).map(([id,app])=>'<a class="app-entry" href="#apps/'+id+'" '+(route==='apps/'+id?'aria-current="page"':'')+'>'+programIcon(id)+'<span class="program-name">'+esc(app.name)+'</span></a>').join('')+'</div></div>':'';
+  document.getElementById('nav').innerHTML='<div class="common-group"><div class="nav-group-label">设备管理</div>'+navDefs.map(n=>'<a href="#'+n.href+'" '+(groupOf(route)===n.group?'aria-current="page"':'')+'>'+icon(n.icon)+n.label+'</a>').join('')+'</div>'+programs;
+  document.getElementById('crumb').textContent=routeLabels[route]||'设备概览';
+  document.getElementById('tier-name').textContent=names[license.tier];
+  const page=route==='overview'?overview:groupOf(route)==='devices'?devicesPage:groupOf(route)==='diagnostics'?diagnosticsPage:groupOf(route)==='api'?apiPage:groupOf(route)==='settings'?settingsPage:appsPage;
+  document.getElementById('main').innerHTML=page()+`<footer class="footnote"><span>ONE-G ROBOTICS <span aria-hidden="true">/</span> RobotDock</span><span>离线交互 Demo · 不连接设备，不发送控制指令</span></footer>`;
+  if(focus)document.getElementById('main').focus({preventScroll:true});
+  scheduleExpiryRefresh();
+}
+function go(r){
+  if(r==='apps')r='apps/teleop';
+  if(!allowed().includes(r))r='overview';
+  if(location.hash==='#'+r){route=r;render(true);window.scrollTo(0,0);}else location.hash=r;
+}
+let expiryTimer;
+function scheduleExpiryRefresh(){
+  clearTimeout(expiryTimer);
+  if(license.expires_at===null||licenseExpired())return;
+  const delay=Math.min(Date.parse(license.expires_at)-Date.now()+50,2147483647);
+  expiryTimer=setTimeout(()=>{if(!allowed().includes(route)){route='overview';history.replaceState(null,'','#overview');}render();},delay);
+}
+window.addEventListener('hashchange',()=>window.scrollTo(0,0));
+window.example=example;
+route=location.hash.slice(1)||'overview';
+render();
+</script>
+</body>
+</html>
