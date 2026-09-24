@@ -248,11 +248,12 @@ small, .small { font-size: 12px; }
 button { border-radius: 10px; min-height: 44px; padding: 10px 18px; font-size: 14px; font-weight: 600; border-color: #d5dfe3; }
 button:hover { background: #edf3f5; border-color: #b7c8ce; }
 button:active { background: #e2ecef; }
-button.primary, .heading > button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-button.primary:hover, .heading > button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-button:disabled, button.primary:disabled { color: #667780; background: #e8edef; border-color: #e0e6e9; cursor: not-allowed; }
+button.primary, .heading > button.primary { background: #f1f7f7; border-color: #c6d9dd; color: #28535a; }
+button.primary:not(:disabled):hover, .heading > button.primary:not(:disabled):hover { background: #e8f1f2; border-color: #b4cdd3; color: #20474e; }
+button.primary:not(:disabled):active, .heading > button.primary:not(:disabled):active { background: #dfeaec; border-color: #a9c3ca; }
+button:disabled, button.primary:disabled, .heading > button.primary:disabled { color: #667780; background: #e8edef; border-color: #e0e6e9; cursor: not-allowed; }
 .heading > button { background: var(--panel); border-color: #d5dfe3; }
-.heading > button:hover { background: #edf3f5; border-color: #b7c8ce; }
+.heading > button:not(:disabled):hover { background: #edf3f5; border-color: #b7c8ce; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
   outline: 3px solid var(--accent); outline-offset: 4px;
 }
@@ -319,7 +320,8 @@ pre { border-radius: 12px; background: #1b2d35; color: #e1edf1; font-size: 13px;
 .next-panel h2 { font-size: 26px; line-height: 1.5; letter-spacing: -.5px; max-width: none; }
 .next-panel > p { font-size: 14px; line-height: 1.85; }
 .next-arrow { background: #eef4f5; color: #617e89; }
-.next-action button { min-height: 46px; font-size: 14px; }
+.next-action button { display: inline-flex; width: auto; max-width: 100%; min-height: 44px; padding: 10px 14px; justify-content: flex-start; gap: 20px; font-size: 14px; }
+.next-action button > span { flex-shrink: 0; color: #6b888f; }
 .delivery-line strong { font-size: 14px; }
 .delivery-line span, .delivery-line a { font-size: 12px; }
 .delivery-line a:hover, .text-link:hover { color: var(--accent); }
