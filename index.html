@@ -565,6 +565,34 @@ button:disabled, button.primary:disabled, .heading > button.primary:disabled,
 @media (max-width: 600px) {
   .subnav.device-tabs { gap: 4px 22px; }
 }
+
+/* Position is a local choice within the selected device category. */
+.subnav.device-tabs:has(+ .device-position-bar) { margin-bottom: 18px; }
+.device-position-bar {
+  gap: 10px; margin: 18px 0 0; padding: 0; border: 0;
+}
+.device-position-bar::before {
+  content: "位置"; margin-right: 2px; color: var(--muted);
+  font-size: 12px; line-height: 1.5;
+}
+.device-position-tabs { gap: 4px; min-width: 0; max-width: 100%; }
+.device-position-tabs a {
+  justify-content: center; min-height: 40px; padding: 8px 12px;
+  border: 0; border-radius: 7px; background: transparent;
+  font-size: 13px; line-height: 1.4; font-weight: 400; white-space: nowrap;
+}
+.device-position-tabs a[aria-current=page] {
+  color: var(--accent); background: #e0eeee; border: 0; font-weight: 600;
+}
+.device-position-tabs a[aria-current=page]:hover { background: #d8e9e9; }
+.device-position-bar > span { font-size: 11px; line-height: 1.5; }
+@media (max-width: 600px) {
+  .device-position-bar::before { flex-basis: 100%; }
+  .device-position-bar > span { flex-basis: 100%; margin-left: 0; }
+}
+@media (any-pointer: coarse) {
+  .device-position-tabs a { min-height: 44px; }
+}
 </style>
 <style id="one-g-vector-logo-style">
 /* Official black vector symbol, with the existing brand dimensions retained. */
